@@ -2,7 +2,7 @@ lista_alunos = []
 opcao = -1
 
 def menu_inicial():
-    print("--- Menu Inicial do CRUD em Python ---")
+    print("\n--- Menu Inicial do CRUD em Python ---")
     print("--- Seja bem-vindo ---")
     print("   1 - Adicionar aluno")
     print("   2 - Atualizar aluno")
@@ -10,6 +10,28 @@ def menu_inicial():
     print("   4 - Exibir aluno")
     print("   5 - Exibir todos os alunos")
     print("   0 - Encerrar Programa")
+
+def exibir_aluno():
+    print("\n------------------------------------")
+    print(f"Nome: {aluno["nome_aluno"]}")
+    print(f"RM do aluno: {aluno["rm"]}")
+    print(f"Curso: {aluno["curso"]}")
+    print(f"Valor da Mensalidade: {aluno["mensalidade"]}")
+    print("------------------------------------")
+
+def adicionar_aluno():
+    nome = input("Digite o nome do novo aluno: ")
+    rm = input(f"Digite o RM do aluno ({nome}): ")
+    curso = input(f"Digite o curso do aluno ({nome}): ")
+    valor_mensalidade = float(input(f"Digite a mensalidade do aluno ({nome}): "))
+
+    aluno = {
+                "nome_aluno":  nome,
+                "rm" : rm,
+                "curso" :  curso,
+                "mensalidade" : valor_mensalidade
+            }
+    lista_alunos.append(aluno)
 
 ## Inicio de refatoração de código
 # def msg_opcao_escolhida(acao):
@@ -21,22 +43,11 @@ while (opcao!=0) :
 
     if(opcao>0 and opcao<6) :
         match opcao:
-        # Inserir aluno
+            # Inserir aluno
             case 1:
-                nome = input("Digite o nome do novo aluno: ")
-                rm = input(f"Digite o RM do aluno ({nome}): ")
-                curso = input(f"Digite o curso do aluno ({nome}): ")
-                valor_mensalidade = float(input(f"Digite a mensalidade do aluno ({nome}): "))
+                adicionar_aluno()
 
-                dados_aluno = {
-                    "nome_aluno":  nome,
-                    "rm" : rm,
-                    "curso" :  curso,
-                    "mensalidade" : valor_mensalidade
-                }
-                lista_alunos.append(dados_aluno)
-
-        # Alterar aluno
+            # Alterar aluno
             case 2:
                 # msg_opcao_escolhida("Alterar")
                 rm_alteracao = input("Digite o RM do aluno que deseja alterar: ")
@@ -58,7 +69,8 @@ while (opcao!=0) :
                         lista_alunos[indice["mensalidade"]] = valor_mensalidade
                     else:
                         print("RM não encontrado!!!!")
-        # Excluir aluno
+
+            # Excluir aluno
             case 3:
                 rm_excluir = input("Digite o RM do aluno que deseja excluir: ")
                 indice = -1
@@ -68,26 +80,23 @@ while (opcao!=0) :
                     else:
                         print("RM não encontrado!!!!")
 
-        # Exibir Aluno
+            # Exibir Aluno
             case 4:
                 rm_exibir = input("Digite o RM do aluno que deseja exibir: ")
-                indice = -1
-                for i in range(len(lista_alunos)):
-                    if (lista_alunos[i]["rm"] == rm_exibir):
-                        indice = i
 
-                if(indice != -1):
-                    for chave, valor in lista_alunos[indice].items():
-                        print(f"{chave}: {valor}")
-                    print("-----------------")
-                else:
-                    print("RM não encontrado!!!!")
-            case 5:
                 for aluno in lista_alunos:
-                    print(f"\nNome: {aluno["nome_aluno"]}")
-                    print(f"RM do aluno: {aluno["rm"]}")
-                    print(f"Curso: {aluno["curso"]}")
-                    print(f"Valor da Mensalidade: {aluno["mensalidade"]}")
-                    print("-------------------------------------------")
+                    if(aluno["rm"] == rm_exibir):
+                        exibir_aluno()
+                    else:
+                        print("RM não encontrado!!!!")
+
+            # Exibir todos os alunos
+            case 5:
+                if (len(lista_alunos) == 0):
+                    print("\nNenhum aluno encontrado!!!!")
+                else:
+                    print("Exibindo alunos: ")
+                for aluno in lista_alunos:
+                    exibir_aluno()
 
 print("Opção inválida!!")
