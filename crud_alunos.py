@@ -24,20 +24,20 @@ while (opcao!=0) :
                 mensalidade = float(input(f"Digite a mensalidade do aluno ({nome}): "))
 
                 dados_aluno = {
-                    "nome" :  nome,
+                    "nome_aluno":  nome,
                     "rm" : rm,
                     "curso" :  curso,
                     "mensalidade" : mensalidade
                 }
-
                 lista_alunos.append(dados_aluno)
+
         # Alterar aluno
             case 2:
                 rm_alteracao = input("Digite o RM do aluno que deseja alterar: ")
                 indice = -1
                 for i in range( len(lista_alunos) ):
                     if(lista_alunos[i]["rm"] == rm_alteracao):
-                        print(f"Nome: {lista_alunos[indice]["nome"]}")
+                        print(f"Nome: {lista_alunos[indice]["nome_aluno"]}")
                         nome = input("Digite o novo nome do aluno: ")
 
                         print(f"Curso: {lista_alunos[indice]["curso"]}")
@@ -46,7 +46,7 @@ while (opcao!=0) :
                         print(f"Mensalidade: {lista_alunos[indice]["mensalidade"]}")
                         mensalidade = input("Digite a nova msenalidade do aluno: ")
 
-                        lista_alunos[indice["nome"]] = nome
+                        lista_alunos[indice["nome_aluno"]] = nome
                         lista_alunos[indice["curso"]] = curso
                         lista_alunos[indice["mensalidade"]] = mensalidade
                     else:
@@ -65,9 +65,14 @@ while (opcao!=0) :
             case 4:
                 rm_exibir = input("Digite o RM do aluno que deseja exibir: ")
                 indice = -1
-                if(indice!=-1) :
-                    for chave, valor in lista_alunos[indice]["rm_exibir"].items():
+                for i in range(len(lista_alunos)):
+                    if (lista_alunos[i]["rm"] == rm_exibir):
+                        indice = i
+
+                if(indice != -1):
+                    for chave, valor in lista_alunos[indice].items():
                         print(f"{chave}: {valor}")
+                    print("-----------------")
                 else:
                     print("RM não encontrado!!!!")
 print("Opção inválida!!")
