@@ -1,7 +1,7 @@
 lista_alunos = []
-
 opcao = -1
-while (opcao!=0) :
+
+def menu_inicial():
     print("--- Menu Inicial do CRUD em Python ---")
     print("--- Seja bem-vindo ---")
     print("   1 - Inserir Aluno")
@@ -9,7 +9,11 @@ while (opcao!=0) :
     print("   3 - Excluir Aluno")
     print("   4 - Exibir Aluno")
     print("   0 - Encerrar Programa")
+
+while (opcao!=0) :
+    menu_inicial()
     opcao = int(input("Selecione uma opção: "))
+
     if(opcao>0 and opcao<=4) :
         match opcao:
         # Inserir aluno
