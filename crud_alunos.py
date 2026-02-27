@@ -1,3 +1,4 @@
+import json
 lista_alunos = []
 opc = -1
 
@@ -56,7 +57,7 @@ def adicionar_aluno():
 def atualizar_aluno():
     rmDigitado = requisicao_aluno("atualizar")
     for aluno in lista_alunos:
-        if (aluno["rm"] == rmDigitado):
+        if aluno["rm"] == rmDigitado:
             print(f"Nome: {aluno["nome_aluno"]}")
             nome = input("Digite o novo nome do aluno: ")
 
@@ -77,7 +78,7 @@ def atualizar_aluno():
 def excluir_aluno():
     rmDigitado = requisicao_aluno("excluir")
     for aluno in lista_alunos:
-        if (aluno["rm"] == rmDigitado):
+        if aluno["rm"] == rmDigitado:
             lista_alunos.pop(aluno)
             print("\nAluno excluído com sucesso!")
         else:
@@ -86,13 +87,13 @@ def excluir_aluno():
 def exibir_aluno():
     rmDigitado = requisicao_aluno("exibir")
     for aluno in lista_alunos:
-        if (aluno["rm"] == rmDigitado):
+        if aluno["rm"] == rmDigitado:
             informacoes_aluno(aluno)
         else:
             print("\nRM não encontrado!!!!")
 
 def exibir_alunos():
-    if (len(lista_alunos) == 0):
+    if len(lista_alunos) == 0:
         print("\nNenhum aluno encontrado!!!!")
     else:
         print("\nExibindo alunos: ")
@@ -103,4 +104,12 @@ def requisicao_aluno(acao):
     rm = input(f"Digite o RM do aluno que deseja {acao}: ")
     return rm
 
+# def leitura_inicial_json():
+#     arquivo_json = open("../dados_alunos.json", "r")
+#     dados_alunos = json.load(arquivo_json)
+#     return dados_alunos
+#
+# lista_alunos.append(leitura_inicial_json())
+# for aluno in lista_alunos:
+#     informacoes_aluno(aluno)
 menu_inicial(opc)
