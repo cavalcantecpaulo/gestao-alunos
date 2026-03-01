@@ -8,3 +8,9 @@
 /dataSources.local.xml
 # Editor-based HTTP Client requests
 /httpRequests/
+
+.idea/
+.venv/
+__pycache__/
+*.pyc
+Codigos/dados_alunos.json
