@@ -11,6 +11,7 @@ def menu_inicial(opc):
         print("   3 - Excluir aluno")
         print("   4 - Exibir aluno")
         print("   5 - Exibir todos os alunos")
+        print("   6 - Salvar lista em arquivo Json")
         print("   0 - Encerrar Programa")
 
         opc = int(input("Selecione uma opção: "))
@@ -25,6 +26,8 @@ def menu_inicial(opc):
                 exibir_aluno()
             case 5:
                 exibir_alunos()
+            case 6:
+                salvando_lista_json()
             case 0:
                 print("\nEncerrando programa...")
                 break
@@ -52,7 +55,7 @@ def adicionar_aluno():
         "mensalidade": valor_mensalidade
     }
     lista_alunos.append(aluno)
-    print("\nAluno foi adicionado com sucesso!")
+    print("\nAluno adicionado com sucesso!")
 
 def atualizar_aluno():
     rmDigitado = requisicao_aluno("atualizar")
@@ -79,7 +82,7 @@ def excluir_aluno():
     rmDigitado = requisicao_aluno("excluir")
     for aluno in lista_alunos:
         if aluno["rm"] == rmDigitado:
-            lista_alunos.pop(aluno)
+            lista_alunos.remove(aluno)
             print("\nAluno excluído com sucesso!")
         else:
             print("\nRM não encontrado!!!!")
@@ -104,6 +107,12 @@ def requisicao_aluno(acao):
     rm = input(f"Digite o RM do aluno que deseja {acao}: ")
     return rm
 
+def salvando_lista_json():
+    with open("dados_alunos.json", "w") as dados_alunos:
+        json.dump(lista_alunos, dados_alunos)
+
+    print("\nSalvando lista em arquivo json... ")
+
 # def leitura_inicial_json():
 #     arquivo_json = open("../dados_alunos.json", "r")
 #     dados_alunos = json.load(arquivo_json)
@@ -112,4 +121,5 @@ def requisicao_aluno(acao):
 # lista_alunos.append(leitura_inicial_json())
 # for aluno in lista_alunos:
 #     informacoes_aluno(aluno)
+
 menu_inicial(opc)
