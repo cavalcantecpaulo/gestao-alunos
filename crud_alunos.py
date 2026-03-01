@@ -4,8 +4,7 @@ opc = -1
 
 def menu_inicial(opc):
     while opc != 0:
-        print("\n--- CRUD Alunos Python ---")
-        print("--- Seja bem-vindo ao Mini-Crud em Python ---")
+        exibir_titulo_inicial()
         print("   1 - Adicionar aluno")
         print("   2 - Atualizar aluno")
         print("   3 - Excluir aluno")
@@ -32,7 +31,7 @@ def menu_inicial(opc):
                 print("\nEncerrando programa...")
                 break
             case _:
-                print("\nOpção inválida!!")
+                exibicao_erro("Opção inválida!!!")
 
 def informacoes_aluno(aluno):
     print("\n-----------------------------------")
@@ -43,7 +42,7 @@ def informacoes_aluno(aluno):
     print("-----------------------------------")
 
 def adicionar_aluno():
-    nome = input("Digite o nome do novo aluno: ")
+    nome = input("\nDigite o nome do novo aluno: ")
     rm = input(f"Digite o RM do aluno ({nome}): ")
     curso = input(f"Digite o curso do aluno ({nome}): ")
     valor_mensalidade = float(input(f"Digite a mensalidade do aluno ({nome}): "))
@@ -61,7 +60,7 @@ def atualizar_aluno():
     rmDigitado = requisicao_aluno("atualizar")
     for aluno in lista_alunos:
         if aluno["rm"] == rmDigitado:
-            print(f"Nome: {aluno["nome_aluno"]}")
+            print(f"\nNome: {aluno["nome_aluno"]}")
             nome = input("Digite o novo nome do aluno: ")
 
             print(f"Curso: {aluno["curso"]}")
@@ -76,7 +75,7 @@ def atualizar_aluno():
 
             print("\nInformações de aluno atualizada com sucesso!")
         else:
-            print("\nRM não encontrado!!!!")
+            exibicao_erro("\nRM não encontrado!!!!")
 
 def excluir_aluno():
     rmDigitado = requisicao_aluno("excluir")
@@ -85,7 +84,7 @@ def excluir_aluno():
             lista_alunos.remove(aluno)
             print("\nAluno excluído com sucesso!")
         else:
-            print("\nRM não encontrado!!!!")
+            exibicao_erro("\nRM não encontrado!!!!")
 
 def exibir_aluno():
     rmDigitado = requisicao_aluno("exibir")
@@ -93,7 +92,7 @@ def exibir_aluno():
         if aluno["rm"] == rmDigitado:
             informacoes_aluno(aluno)
         else:
-            print("\nRM não encontrado!!!!")
+            exibicao_erro("\nRM não encontrado!!!!")
 
 def exibir_alunos():
     if len(lista_alunos) == 0:
@@ -110,8 +109,14 @@ def requisicao_aluno(acao):
 def salvando_lista_json():
     with open("dados_alunos.json", "w") as dados_alunos:
         json.dump(lista_alunos, dados_alunos)
-
     print("\nSalvando lista em arquivo json... ")
+
+def exibir_titulo_inicial():
+    print("\n--- CRUD Alunos Python ---")
+    print("--- Seja bem-vindo ao Mini-Crud em Python ---")
+
+def exibicao_erro(erro):
+    print(f"\nErro: {erro}")
 
 # def leitura_inicial_json():
 #     arquivo_json = open("../dados_alunos.json", "r")
