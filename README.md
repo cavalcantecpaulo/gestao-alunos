@@ -1,53 +1,53 @@
-# 📚 Mini CRUD de Alunos em Python
+# 📚 Gestão de Alunos — Projeto em Python
 
-> Um projeto educacional de gerenciamento de alunos desenvolvido em Python, implementando operações CRUD (Create, Read, Update, Delete) com interface em linha de comando.
+> Projeto educacional para gerenciamento de alunos em Python (operações CRUD) com interface em linha de comando.
 
 ## 🎯 Sobre o Projeto
 
-Este é um projeto criado a partir de uma **aula de Python** com o objetivo de praticar conceitos fundamentais de programação, como:
+Este projeto nasceu a partir de uma atividade em aula na disciplina "Computational Thinking Using Python" e foi escalado pessoalmente para um sistema de Gestão de Alunos. A ideia inicial — um mini-CRUD estudado em sala — serviu para praticar listas e dicionários após conceitos apresentados em aulas anteriores. Desenvolvi melhorias e refinamentos no código durante o início do meu segundo semestre na FIAP.
+
+O objetivo é consolidar conceitos fundamentais de programação, como:
 - Manipulação de estruturas de dados (listas e dicionários)
 - Laços de repetição e condicionais
 - Funções e modularização
 - Validação de entrada do usuário
-- Operações de CRUD
+- Operações de CRUD (Create, Read, Update, Delete)
 
 ## ✨ Funcionalidades
 
-O Mini CRUD oferece as seguintes operações:
+O sistema de Gestão de Alunos oferece as seguintes operações:
 
 ### 1️⃣ **Adicionar Aluno**
-- Permite registrar um novo aluno no sistema
-- Solicita informações: Nome, RM (Registro de Matrícula), Curso e Mensalidade
-- Armazena os dados em uma lista de dicionários
+- Registrar um novo aluno no sistema
+- Informações solicitadas: Nome, RM (Registro de Matrícula), Curso e Mensalidade
+- Armazenamento em uma lista de dicionários
 
 ### 2️⃣ **Atualizar Aluno**
-- Busca o aluno pelo RM (identificador único)
-- Permite modificar: Nome, Curso e Valor da Mensalidade
-- Valida se o aluno existe antes de atualizar
+- Busca por RM (identificador único)
+- Permite alterar Nome, Curso e Mensalidade
+- Valida existência do aluno antes de atualizar
 
 ### 3️⃣ **Excluir Aluno**
-- Remove um aluno da lista utilizando o RM
-- Mensagens de confirmação quando o aluno não é encontrado
+- Remove um aluno a partir do RM
+- Mensagens claras quando o aluno não é encontrado
 
 ### 4️⃣ **Exibir Aluno**
-- Busca e exibe os dados completos de um aluno específico
-- Formatação legível com separadores visuais
+- Exibe dados completos de um aluno específico com formatação legível
 
 ### 5️⃣ **Exibir Todos os Alunos**
-- Lista todos os alunos cadastrados no sistema
-- Exibe mensagem quando nenhum aluno está registrado
+- Lista todos os alunos cadastrados
+- Mensagem informativa quando não houver registros
 
 ### 6️⃣ **Salvar em JSON**
-- Persiste todos os dados em arquivo `dados_alunos.json`
-- Permite recuperar dados em futuras execuções do programa
-- Formato de arquivo estruturado e facilmente legível
+- Persiste os dados no arquivo `dados_alunos.json`
+- Permite recuperar o estado em execuções futuras
 
 ### 🚪 **Encerrar Programa**
-- Fecha a aplicação de forma segura
+- Encerra a aplicação com segurança
 
 ## 🛠️ Tecnologias Utilizadas
 
-- **Python 3.10+** (Com a estrutura `match/case`)
+- **Python 3.10+** (uso de `match/case` no menu)
 - Estruturas de dados nativas (listas, dicionários)
 - Interface de linha de comando (CLI)
 
@@ -58,23 +58,26 @@ O Mini CRUD oferece as seguintes operações:
 
 ## 🚀 Como Executar
 
-1. Clone ou baixe o projeto:
-```bash
-git clone https://github.com/seu-usuario/Mini_CRUD_Python.git
-cd Mini_CRUD_Python
+1. Clone ou baixe o projeto (exemplo):
+
+```powershell
+git clone https://github.com/seu-usuario/gestao_alunos.git; cd gestao_alunos
 ```
 
-2. Execute o programa:
-```bash
+2. Execute o programa a partir da pasta do repositório:
+
+```powershell
 python Codigos/crud_alunos.py
 ```
 
-3. Selecione uma opção do menu e siga as instruções
+3. Selecione uma opção do menu e siga as instruções.
+
+> Observação: o arquivo principal do código está localizado em `Codigos/crud_alunos.py` — o caminho acima corresponde à estrutura do repositório.
 
 ## 📁 Estrutura do Projeto
 
 ```
-Mini_CRUD_Python/
+gestao_alunos/
 ├── README.md
 └── Codigos/
     └── crud_alunos.py
@@ -82,7 +85,7 @@ Mini_CRUD_Python/
 
 ## 🏗️ Visão Geral da Arquitetura
 
-O projeto é estruturado de forma modularizada com separação clara de responsabilidades. Cada função é responsável por uma operação específica do sistema.
+O código foi organizado com separação clara de responsabilidades. Cada função tem uma responsabilidade definida, seguindo princípios de design como SRP e DRY.
 
 ### Estrutura de Dados Principal
 
@@ -97,281 +100,112 @@ aluno = {
 
 A lista `lista_alunos` armazena todos os dicionários de alunos cadastrados.
 
-### Funções Principais
+### Funções Principais (resumo)
 
-#### 🎛️ **`menu_inicial(opc)`**
-Função principal que controla o fluxo da aplicação. Apresenta o menu, captura a opção do usuário e chama a função correspondente usando `match/case` para roteamento de operações.
-
-#### ➕ **`adicionar_aluno()`**
-Captura as informações do aluno (nome, RM, curso e mensalidade) e adiciona à lista com feedback de sucesso.
-
-#### ✏️ **`atualizar_aluno()`**
-Busca um aluno pelo RM e permite atualizar seu nome, curso e mensalidade com valores atuais exibidos como referência.
-
-#### ❌ **`excluir_aluno()`**
-Remove um aluno específico da lista utilizando seu RM como identificador.
-
-#### 👁️ **`exibir_aluno()`**
-Exibe informações detalhadas de um aluno específico com formatação visual clara.
-
-#### 📋 **`exibir_alunos()`**
-Lista todos os alunos cadastrados no sistema ou informa quando nenhum aluno está registrado.
-
-#### 🔍 **`requisicao_aluno(acao)`**
-Função auxiliar reutilizável que solicita o RM do aluno com mensagem contextualizada sobre a ação a ser realizada. Implementa o princípio **DRY** (Don't Repeat Yourself).
-
-#### 📊 **`informacoes_aluno(aluno)`**
-Função de formatação que exibe as informações de um aluno de forma visual e padronizada com separadores.
+- `menu_inicial(opc)` — controle de fluxo e roteamento
+- `adicionar_aluno()` — captura e adiciona um novo aluno
+- `atualizar_aluno()` — atualiza dados de um aluno existente
+- `excluir_aluno()` — remove aluno por RM
+- `exibir_aluno()` — exibe informações detalhadas de um aluno
+- `exibir_alunos()` — lista todos os alunos
+- `requisicao_aluno(acao)` — solicita RM de forma contextualizada (DRY)
+- `informacoes_aluno(aluno)` — formata a exibição de dados
+- `salvando_lista_json()` — persiste dados em `dados_alunos.json`
 
 ## 🔧 Detalhes da Modularização
 
 ### Princípios Aplicados
 
-O código segue os seguintes princípios de design:
+1. **Single Responsibility Principle (SRP)** — cada função cumpre uma única responsabilidade clara.
+2. **DRY (Don't Repeat Yourself)** — funções auxiliares eliminam duplicação.
+3. **Separação de Concerns** — controle, negócio, apresentação e persistência bem definidos.
 
-1. **Single Responsibility Principle (SRP)**
-   - Cada função tem uma responsabilidade única e bem definida
-   - `adicionar_aluno()` apenas adiciona alunos
-   - `atualizar_aluno()` apenas atualiza dados existentes
-   - `exibir_alunos()` apenas exibe informações
-   - `salvando_lista_json()` apenas persiste dados em arquivo
-   - `exibir_titulo_inicial()` apenas exibe o cabeçalho
-   - `exibicao_erro()` apenas formata mensagens de erro
+### Fluxo da Aplicação (visão simplificada)
 
-2. **DRY (Don't Repeat Yourself)**
-   - A função `requisicao_aluno(acao)` elimina a repetição de código
-   - Utilizada em `atualizar_aluno()`, `excluir_aluno()` e `exibir_aluno()`
-   - A função `exibicao_erro()` centraliza a exibição de mensagens de erro
-   - Reduz bugs e facilita manutenção
+Resumo do fluxo (apenas texto, versão limpa e legível):
 
-3. **Separação de Concerns**
-   - `menu_inicial()` - Controle de fluxo e roteamento de operações
-   - Funções CRUD - Operações de negócio (adicionar, atualizar, excluir, exibir)
-   - `informacoes_aluno()` - Apresentação/Formatação de dados
-   - `requisicao_aluno()` - Utilidade de entrada/input reutilizável
-   - `salvando_lista_json()` - Persistência de dados em arquivo
-   - `exibicao_erro()` - Tratamento centralizado de erros
-   - `exibir_titulo_inicial()` - Apresentação visual do menu
+1. `menu_inicial(opc)` — apresenta o menu CLI e roteia para a operação escolhida.
 
-### Fluxo da Aplicação
+2. Operações principais:
+   - `adicionar_aluno()`
+     - Captura dados (nome, RM, curso, mensalidade)
+     - Adiciona dicionário à `lista_alunos`
+     - (Opcional) chama `salvando_lista_json()` para persistir alterações
 
-```
-┌─────────────────────────────────┐
-│   menu_inicial(opc)             │
-│  (Controla o fluxo principal)   │
-└────────────┬────────────────────┘
-             │
-    ┌────────┴────────┬─────────────┬─────────────┬────────────┐
-    │                 │             │             │            │
-    v                 v             v             v            v
-adicionar_aluno() atualizar_aluno() excluir_aluno() exibir_aluno() exibir_alunos()
-    │                 │             │             │            │
-    └─────────────────┴─────────────┴─────────────┴────────────┘
-                      │
-         ┌────────────┼────────────┐
-         │            │            │
-         v            v            v
-   requisicao_aluno() informacoes_aluno() lista_alunos[]
-   (Input auxiliar)   (Formatação)      (Dados)
-```
+   - `atualizar_aluno()`
+     - Usa `requisicao_aluno("atualizar")` para obter o RM
+     - Localiza aluno na `lista_alunos` e atualiza campos
+     - Chama `salvando_lista_json()` para persistir alterações
+
+   - `excluir_aluno()`
+     - Usa `requisicao_aluno("excluir")` para obter o RM
+     - Remove aluno da `lista_alunos` se existir
+     - Chama `salvando_lista_json()` para persistir alterações
+
+   - `exibir_aluno()`
+     - Usa `requisicao_aluno("exibir")` para obter o RM
+     - Exibe os dados formatados via `informacoes_aluno(aluno)`
+
+   - `exibir_alunos()`
+     - Itera por `lista_alunos` e exibe cada registro
+
+3. Funções auxiliares chave:
+   - `requisicao_aluno(acao)` — entrada centralizada para solicitar RM
+   - `informacoes_aluno(aluno)` — formata saída para leitura amigável
+   - `salvando_lista_json()` — persistência em `dados_alunos.json` (opcional)
+
+4. Observações:
+   - O fluxo do menu é independente da existência do arquivo `dados_alunos.json` — se o arquivo não existir, o programa pode iniciar com `lista_alunos` vazia.
 
 ## 💡 Boas Práticas Implementadas
 
-✅ **Modularização do código** - Separação em funções específicas para cada operação  
-✅ **Funções bem definidas** - Cada operação tem sua função responsável e reutilizável  
-✅ **Menu interativo** - Interface clara e intuitiva com orientações ao usuário  
-✅ **Estrutura de dados apropriada** - Uso de dicionários para armazenar informações do aluno  
-✅ **Match/Case** - Alternativa moderna aos if/elif para seleção de opções (Python 3.10+)  
-✅ **Mensagens de feedback otimizadas** - Feedback claro, contextualizado e informativo ao usuário  
-✅ **DRY (Don't Repeat Yourself)** - Função reutilizável para requisição de RM (`requisicao_aluno`)  
-✅ **Formatação visual** - Separadores e indentação para melhor legibilidade das informações  
-✅ **Persistência de dados** - Salvamento de dados em arquivo JSON para recuperação posterior  
-✅ **Tratamento centralizado de erros** - Função `exibicao_erro()` para mensagens padronizadas
+- Modularização e funções com responsabilidades claras
+- Mensagens de feedback claras e consistentes
+- Persistência em JSON para durabilidade dos dados
+- Uso de `match/case` (Python 3.10+) para roteamento do menu
+- Nomes descritivos e tratamento centralizado de erros
 
 ## 🚧 Em Desenvolvimento
 
-Este é um projeto em fase inicial de desenvolvimento com foco educacional. Funcionalidades e melhorias continuam em constante evolução, com implementações recentes focadas em modularização do código e otimização da experiência do usuário através de mensagens de feedback claras e contextualizadas.
+Funcionalidades e melhorias continuam em desenvolvimento. Algumas melhorias recentes e propostas estão listadas abaixo.
 
-### ✅ Implementações Recentes (v1.2.1)
-- **Persistência de dados em JSON** - Função `salvando_lista_json()` para salvar dados em arquivo
-- **Funções auxiliares de UI** - `exibir_titulo_inicial()` para cabeçalho padronizado
-- **Tratamento centralizado de erros** - Função `exibicao_erro()` para mensagens de erro padronizadas
-- **Mensagens de feedback otimizadas** - Menu intuitivo com instruções claras para melhor UX
+### ✅ Implementações Recentes (v1.3.1)
+- Persistência em JSON com `salvando_lista_json()`
+- Funções auxiliares de UI (`exibir_titulo_inicial()`)
+- Tratamento centralizado de erros (`exibicao_erro()`)
+- Melhorias de UX e mensagens de feedback
+
+> Versão atualizada: 1.3.1 — atualização para refletir ajustes no README e pequenas melhorias no projeto.
 
 ## 🔮 Possíveis Próximas Adições
 
 ### Curto Prazo
-- [ ] **Carregamento de dados ao iniciar** - Carregar alunos salvos automaticamente do arquivo JSON
-- [ ] **Validação robusta** - Validar RM único, email, telefone, formato de entrada
-- [ ] **Busca avançada** - Filtrar alunos por curso, nome ou intervalo de mensalidade
+- [ ] Carregamento automático de dados ao iniciar
+- [ ] Validações adicionais (RM único, formatos)
+- [ ] Busca e filtro por curso/nome/mensalidade
 
 ### Médio Prazo
-- [ ] **Refatoração em módulos** - Separar em módulos (models, utils, views) para melhor organização
-- [ ] **Testes unitários** - Implementar testes com pytest
-- [ ] **Interface gráfica** - Migrar para tkinter ou PyQt
-- [ ] **Relatórios** - Gerar relatórios em PDF com dados dos alunos
-- [ ] **Autenticação** - Adicionar login de usuário
+- [ ] Refatoração em módulos (models, utils, views)
+- [ ] Testes unitários com pytest
+- [ ] Interface gráfica (tkinter/PyQt)
 
 ### Longo Prazo
-- [ ] **Banco de dados** - Integrar SQLite, PostgreSQL ou MySQL
-- [ ] **API REST** - Expor funcionalidades via API Flask/FastAPI
-- [ ] **Dashboard web** - Criar interface web com Flask/Django
-- [ ] **Sistema de pagamentos** - Integrar sistema de cobrança de mensalidades
+- [ ] Integração com banco de dados (SQLite, PostgreSQL)
+- [ ] API REST (Flask/FastAPI)
+- [ ] Dashboard web
 
-## 🎓 Conceitos de Programação e Boas Práticas Aprendidas
+## 🎓 Conceitos e Aprendizados
 
-Este projeto foi desenvolvido como exercício prático de Python, consolidando diversos conceitos fundamentais de programação e design de software:
-
-### 📌 Conceitos Fundamentais de Programação
-
-#### 1. **Estruturas de Dados**
-- **Listas**: Armazenamento de múltiplos alunos em uma estrutura dinâmica
-- **Dicionários**: Organização de dados de cada aluno com chaves nomeadas (nome, RM, curso, mensalidade)
-- Compreensão de quando usar cada tipo de estrutura apropriadamente
-
-#### 2. **Fluxo de Controle**
-- **Laços de Repetição**: `while` para manter o menu ativo e `for` para iterar sobre alunos
-- **Estruturas Condicionais**: `if/else` para validação e `match/case` para roteamento de opções
-- Compreensão de entrada em modo interativo e saída controlada
-
-#### 3. **Funções e Modularização**
-- **Definição e chamada de funções**: Cada operação CRUD tem sua própria função
-- **Funções com parâmetros**: `requisicao_aluno(acao)` mostra como parametrizar comportamento
-- **Funções com retorno**: `requisicao_aluno()` retorna dados capturados
-- **Escopo de variáveis**: Compreensão de variáveis locais vs globais
-- **Reutilização de código**: Funções auxiliares eliminam duplicação
-
-#### 4. **Manipulação de Dados**
-- **Busca em listas**: Iterar com `for` e comparar valores com `==`
-- **Modificação de dados**: Alteração de valores em dicionários dentro de listas
-- **Remoção de elementos**: Uso de `remove()` para excluir alunos
-- **Formatação de saída**: Concatenação de strings e `f-strings` para mensagens dinâmicas
-
-#### 5. **Persistência de Dados**
-- **Serialização JSON**: Conversão de estruturas Python para formato JSON
-- **I/O de arquivos**: Abertura, escrita e fechamento de arquivos
-- **Compreensão de durabilidade**: Dados salvos persistem após encerramento do programa
-
-### 🏗️ Princípios de Design de Software
-
-#### 1. **Single Responsibility Principle (SRP)**
-Cada função tem uma única responsabilidade bem definida:
-```python
-adicionar_aluno()          # Apenas adiciona
-atualizar_aluno()          # Apenas atualiza
-excluir_aluno()            # Apenas exclui
-exibir_aluno()             # Apenas exibe um
-exibir_alunos()            # Apenas lista todos
-salvando_lista_json()      # Apenas salva em arquivo
-exibicao_erro(erro)        # Apenas formata erros
-exibir_titulo_inicial()    # Apenas exibe cabeçalho
-```
-
-**Benefício**: Código mais fácil de entender, testar e modificar isoladamente.
-
-#### 2. **DRY (Don't Repeat Yourself)**
-A função `requisicao_aluno(acao)` elimina a repetição de código:
-- Usada em 3 operações diferentes (atualizar, excluir, exibir)
-- Uma única alteração afeta todos os lugares que a usam
-- Reduz bugs e mantém o código consistente
-
-```python
-def requisicao_aluno(acao):
-    rm = input(f"Digite o RM do aluno que deseja {acao}: ")
-    return rm
-
-# Reutilizada em múltiplos lugares
-rmDigitado = requisicao_aluno("atualizar")
-rmDigitado = requisicao_aluno("excluir")
-rmDigitado = requisicao_aluno("exibir")
-```
-
-**Benefício**: Menos duplicação, mais manutenibilidade.
-
-#### 3. **Separação de Responsabilidades (Separation of Concerns)**
-O código está organizado em camadas lógicas:
-- **Camada de Controle**: `menu_inicial()` - Fluxo e roteamento
-- **Camada de Negócio**: Funções CRUD - Lógica de operações
-- **Camada de Apresentação**: `informacoes_aluno()`, `exibicao_erro()` - Formatação
-- **Camada de Utilidade**: `requisicao_aluno()` - Operações auxiliares
-- **Camada de Persistência**: `salvando_lista_json()` - Armazenamento
-
-**Benefício**: Melhor organização, facilita manutenção e futuras mudanças.
-
-#### 4. **Coesão Alta**
-Funções relacionadas fazem sentido juntas e o código é facilmente compreensível. Cada seção do código tem um propósito claro.
-
-### 💡 Boas Práticas Técnicas
-
-#### 1. **Estruturas de Dados Apropriadas**
-- Uso de **dicionários** para dados estruturados de alunos
-- Uso de **listas** para coleções dinâmicas
-- Escolha consciente do tipo de dado apropriado para cada situação
-
-#### 2. **Linguagem Moderna (Python 3.10+)**
-- Uso de `match/case` em vez de `if/elif` para seleção de opções
-- Mais legível e conciso que alternativas antigas
-- Demonstrate compreensão de features modernas da linguagem
-
-#### 3. **Mensagens de Feedback Claras**
-- Feedback contextualizado ao usuário ("Aluno adicionado com sucesso!")
-- Mensagens de erro informativas
-- Menu intuitivo com orientações visuais (separadores, títulos)
-- Melhora significativamente a experiência do usuário
-
-#### 4. **Nomes Descritivos**
-- Nomes de funções indicam claramente sua ação: `adicionar_aluno()`, `exibir_titulo_inicial()`, `exibicao_erro()`
-- Nomes de variáveis significativos: `rmDigitado`, `lista_alunos`, `valor_mensalidade`
-- Código se torna autodocumentado
-
-#### 5. **Tratamento Centralizado de Erros**
-- Função `exibicao_erro()` centraliza a formatação de mensagens de erro
-- Consistência visual em todo o programa
-- Fácil alterar o estilo de erro em um único lugar
-
-#### 6. **Formatação Visual**
-- Separadores visuais (linhas com hífens) melhoram legibilidade
-- Indentação consistente
-- Espaçamento adequado entre seções
-
-### 🎯 Padrões de Desenvolvimento Aplicados
-
-#### 1. **Loop de Interação (REPL-like)**
-O menu em loop permite múltiplas operações sem reiniciar o programa:
-```python
-while opc != 0:
-    # exibe menu
-    # captura opção
-    # executa operação
-```
-
-#### 2. **Busca Linear com Match**
-Iterar sobre uma lista para encontrar elemento específico:
-```python
-for aluno in lista_alunos:
-    if aluno["rm"] == rmDigitado:
-        # fazer algo
-```
-
-#### 3. **Padrão de Validação**
-Verificar condições antes de executar operações críticas
-
-#### 4. **Roteamento Dinâmico**
-`match/case` mapeia opções do usuário para funções específicas, facilitando adicionar novas operações
-
-### 🚀 Progressão de Aprendizado
-
-1. **Fundações**: Entender estruturas de dados e fluxo básico
-2. **Funcionalidade**: Implementar operações CRUD completas
-3. **Qualidade**: Refatorar para melhor código (DRY, SRP)
-4. **Polimento**: Adicionar persistência e melhorar UX
-5. **Profissionalismo**: Aplicar princípios de design de software
+Este projeto consolidou conceitos fundamentais:
+- Estruturas de dados (listas e dicionários)
+- Controle de fluxo e entrada interativa
+- Modularização, reutilização e boas práticas de design
+- Persistência com JSON e manipulação de arquivos
 
 ## 🎓 Conclusão
 
-Este projeto não é apenas um exercício de programação - é uma demonstração prática de como estruturar código profissional, aplicando princípios consolidados de engenharia de software desde o início. Conceitos como modularização, separação de responsabilidades e DRY não são apenas "boas práticas teóricas", mas escolhas concretas que tornam o código mais fácil de entender, manter e evoluir.
+O projeto é uma evolução de um exercício de sala de aula que foi escalado para um pequeno sistema de Gestão de Alunos. O foco foi aplicar boas práticas de engenharia de software desde o começo, mantendo o código claro e fácil de evoluir.
 
 ---
 
-**Status**: 🔄 Em Desenvolvimento | **Versão**: 1.3 | **Última atualização**: 01/03/2026
-
+**Status**: 🔄 Em Desenvolvimento | **Versão**: 1.3.1 | **Última atualização**: 01/03/2026
