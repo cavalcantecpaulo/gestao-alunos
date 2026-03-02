@@ -41,15 +41,6 @@ def informacoes_aluno(aluno):
     print(f"    Curso: {aluno["curso"]} | Mensalidade: R${aluno["mensalidade"]}")
     print("-------------------------------------------")
 
-def validacao_curso():
-    curso = input(f"Digite o curso do aluno: ")
-    condicao = (curso == "")
-    while condicao:
-        curso = input(f"Digite o curso do aluno: ")
-        if not condicao:
-            return curso
-    return curso
-
 def adicionar_aluno():
     nome = validacao_nome()
     rm = validacao_rm()
@@ -154,6 +145,7 @@ def validacao_rm():
                     return rm_digitado
 
     return rm_digitado
+
 def validacao_curso():
     curso = input("Digite o novo curso do aluno: ")
     condicao = (curso == "")

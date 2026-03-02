@@ -103,24 +103,68 @@ A lista `lista_alunos\ armazena todos os dicionários de alunos cadastrados.
 
 ### Funções Principais (resumo)
 
-- `menu_inicial(opc)` — controle de fluxo e roteamento
-- `adicionar_aluno()` — captura e adiciona um novo aluno com validação de RM único
-- `atualizar_aluno()` — atualiza dados de um aluno existente
-- `excluir_aluno()` — remove aluno por RM
-- `exibir_aluno()` — exibe informações detalhadas de um aluno
-- `exibir_alunos()` — lista todos os alunos
+#### Controle e Roteamento
+- `menu_inicial(opc)` — controle de fluxo principal com roteamento via `match/case`
+
+#### Operações CRUD
+- `adicionar_aluno()` — captura e adiciona um novo aluno com validação
+- `atualizar_aluno()` — atualiza dados de um aluno existente por RM
+- `excluir_aluno()` — remove aluno da lista por RM
+- `exibir_aluno()` — exibe informações detalhadas de um aluno por RM
+- `exibir_alunos()` — lista todos os alunos cadastrados
+
+#### Validação de Entrada (Módulos Separados — v1.3.3)
+- `validacao_nome()` — valida e captura o nome do aluno (evita vazios)
+- `validacao_rm()` — valida RM único, evita duplicação
+- `input_rm()` — função auxiliar para captura de RM (suporta reutilização)
+- `validacao_curso()` — valida e captura o curso (evita vazios, retorna em maiúsculas)
+- `validacao_mensalidade()` — valida valor numérico positivo para mensalidade
+
+#### Funções Auxiliares
 - `requisicao_aluno(acao)` — solicita RM de forma contextualizada (DRY)
-- `rm_existente(rm)` — valida se um RM já existe no sistema
-- `informacoes_aluno(aluno)` — formata a exibição de dados
-- `salvando_lista_json()` — persiste dados em \`dados_alunos.json\`
+- `informacoes_aluno(aluno)` — formata a exibição de dados com separadores
+- `exibir_titulo_inicial()` — exibe cabeçalho da aplicação
+- `exibicao_erro(erro)` — trata exibição centralizada de erros
+- `salvando_lista_json()` — persiste dados em `dados_alunos.json`
 
 ## 🔧 Detalhes da Modularização
 
 ### Princípios Aplicados
 
 1. **Single Responsibility Principle (SRP)** — cada função cumpre uma única responsabilidade clara.
+   - Validação de nome, RM, curso e mensalidade estão em módulos separados
+   - Operações CRUD são independentes e reutilizam os módulos de validação
+   - Funções auxiliares (erro, exibição, persistência) com responsabilidades bem definidas
+
 2. **DRY (Don't Repeat Yourself)** — funções auxiliares eliminam duplicação.
+   - `validacao_nome()`, `validacao_rm()`, `validacao_curso()`, `validacao_mensalidade()` são reutilizadas em `adicionar_aluno()` e `atualizar_aluno()`
+   - `requisicao_aluno(acao)` centraliza a captura de RM com contexto dinâmico
+   - `informacoes_aluno(aluno)` formata exibição consistente
+
 3. **Separação de Concerns** — controle, negócio, apresentação e persistência bem definidos.
+   - **Controle**: `menu_inicial()` roteia operações
+   - **Validação**: Módulos separados para cada campo
+   - **Negócio**: CRUD (adicionar, atualizar, excluir, exibir)
+   - **Apresentação**: `informacoes_aluno()`, `exibir_titulo_inicial()`, `exibicao_erro()`
+   - **Persistência**: `salvando_lista_json()`
+
+### Modularização de Validação de Entrada (v1.3.3)
+
+A partir da v1.3.3, as **4 validações principais** foram separadas em funções dedicadas:
+
+```
+Adicionar/Atualizar Aluno
+    ├── validacao_nome()           → Valida nome (evita vazio)
+    ├── validacao_rm()             → Valida RM único (chama input_rm())
+    ├── validacao_curso()          → Valida curso (evita vazio, maiúsculas)
+    └── validacao_mensalidade()    → Valida valor positivo
+```
+
+Benefícios:
+- ✅ Facilita testes isolados de cada validação
+- ✅ Reutilização em múltiplas operações (adicionar e atualizar)
+- ✅ Manutenção centralizada de regras de validação
+- ✅ Código mais legível e organizado
 
 ### Fluxo da Aplicação (visão simplificada)
 
@@ -170,15 +214,17 @@ Resumo do fluxo (apenas texto, versão limpa e legível):
 
 ## 🚧 Em Desenvolvimento
 
-Funcionalidades e melhorias continuam em desenvolvimento. Algumas melhorias recentes e propostas estão listadas abaixo.
+Funcionalidades e melhorias continuam em desenvolvimento. Algumas melhorias recentes estão listadas abaixo.
 
-### ✅ Implementações Recentes (v1.3.1)
+### ✅ Implementações Recentes (v1.3.3)
+- **Modularização completa das validações de entrada**
+  - Separação em 4 módulos independentes: `validacao_nome()`, `validacao_rm()`, `validacao_curso()`, `validacao_mensalidade()`
+  - Cada módulo encapsula a lógica de validação de um campo específico
+  - Funções reutilizáveis em `adicionar_aluno()` e `atualizar_aluno()`
+- Validação de RM único e evita duplicação
 - Persistência em JSON com `salvando_lista_json()`
 - Funções auxiliares de UI (`exibir_titulo_inicial()`)
 - Tratamento centralizado de erros (`exibicao_erro()`)
-- Melhorias de UX e mensagens de feedback
-
-> Versão atualizada: 1.3.1 — adição de validação de RM único e melhorias gerais no projeto.
 
 ## 🔮 Possíveis Próximas Adições
 
