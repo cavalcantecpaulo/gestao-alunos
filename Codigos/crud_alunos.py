@@ -27,26 +27,28 @@ def menu_inicial(opc):
         print("   5 - Exibir todos os alunos")
         print("   6 - Salvar lista em arquivo Json")
         print("   0 - Encerrar Programa")
-
-        opc = int(input("Selecione uma opção: "))
-        match opc:
-            case 1:
-                adicionar_aluno()
-            case 2:
-                atualizar_aluno()
-            case 3:
-                excluir_aluno()
-            case 4:
-                exibir_aluno()
-            case 5:
-                exibir_alunos()
-            case 6:
-                salvando_lista_json()
-            case 0:
-                print("\nEncerrando programa...")
-                break
-            case _:
-                exibicao_erro("Opção inválida!!!")
+        try:
+            opc = int(input("Selecione uma opção: "))
+            match opc:
+                case 1:
+                    adicionar_aluno()
+                case 2:
+                    atualizar_aluno()
+                case 3:
+                    excluir_aluno()
+                case 4:
+                    exibir_aluno()
+                case 5:
+                    exibir_alunos()
+                case 6:
+                    salvando_lista_json()
+                case 0:
+                    print("\nEncerrando programa...")
+                    break
+                case _:
+                    exibicao_erro("Opção inválida!!!")
+        except ValueError:
+            exibicao_erro("Valor inválido, digite um número dentre as opções!!!")
 
 def informacoes_aluno(aluno):
     print("\n----------------------------------------")
@@ -54,11 +56,21 @@ def informacoes_aluno(aluno):
     print(f"    Curso: {aluno["curso"]} | Mensalidade: R${aluno["mensalidade"]}")
     print("----------------------------------------")
 
+
+def validacao_curso():
+    curso = input(f"Digite o curso do aluno: ")
+    condicao = (curso == "")
+    while condicao:
+        curso = input(f"Digite o curso do aluno: ")
+        if not condicao:
+            return curso
+    return curso
+
 def adicionar_aluno():
-    nome = input("\nDigite o nome do novo aluno: ")
-    rm = verificacao_rm()
-    curso = input(f"Digite o curso do aluno ({nome}): ")
-    valor_mensalidade = float(input(f"Digite a mensalidade do aluno ({nome}): "))
+    nome = validacao_nome()
+    rm = validacao_rm()
+    curso = validacao_curso()
+    valor_mensalidade = validacao_mensalidade()
 
     aluno = {
         "nome_aluno": nome,
@@ -76,17 +88,17 @@ def atualizar_aluno():
         condicao = aluno["rm"] == rm_digitado
         if condicao:
             print(f"\nNome: {aluno["nome_aluno"]}")
-            nome = input("Digite o novo nome do aluno: ")
+            nome = validacao_nome()
 
             print(f"Curso: {aluno["curso"]}")
             curso = input("Digite o novo curso do aluno: ")
 
             print(f"Mensalidade: R${aluno["mensalidade"]}")
-            valor_mensalidade = float(input("Digite a nova mensalidade do aluno: "))
+            mensalidade = validacao_mensalidade()
 
             aluno["nome_aluno"] = nome
             aluno["curso"] = curso
-            aluno["mensalidade"] = valor_mensalidade
+            aluno["mensalidade"] = mensalidade
 
             print("\nInformações de aluno atualizada com sucesso!")
             break
@@ -136,7 +148,16 @@ def exibir_titulo_inicial():
 def exibicao_erro(erro):
     print(f"\nErro: {erro}")
 
-def verificacao_rm():
+def validacao_nome():
+    nome = input("\nDigite o nome do novo aluno: ")
+    condicao = (nome == "")
+    while condicao:
+        nome = input("\nDigite o nome do novo aluno: ")
+        if not condicao:
+            return nome
+    return nome
+
+def validacao_rm():
     rm_digitado = input_rm()
 
     for aluno in lista_alunos:
@@ -150,6 +171,13 @@ def verificacao_rm():
 
     return rm_digitado
 
+def validacao_mensalidade():
+    mensalidade = float(input(f"Digite o valor da mensalidade do aluno: "))
+    while mensalidade<0:
+            exibicao_erro("Valor de mensalidade inválido!!!")
+            mensalidade = float(input(f"Digite o valor da mensalidade do aluno: "))
+            return mensalidade
+    return mensalidade
 def input_rm():
     rm = input(f"Digite o RM do aluno: ")
     return rm
