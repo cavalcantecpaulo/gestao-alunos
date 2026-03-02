@@ -212,4 +212,4 @@ O projeto é uma evolução de um exercício de sala de aula que foi escalado pa
 
 ---
 
-**Status**: 🔄 Em Desenvolvimento | **Versão**: 1.3.1 | **Última atualização**: 02/03/2025
+**Status**: 🔄 Em Desenvolvimento | **Versão**: 1.3.3 | **Última atualização**: 02/03/2025

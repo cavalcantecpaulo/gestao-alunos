@@ -1,24 +1,9 @@
 import json
 lista_alunos = []
-opc = -1
+opcao = -1
 
-dados_alunos = [ {
-                    "nome_aluno":  "Paulo",
-                    "rm" : "123",
-                    "curso" : "1TDSPS" ,
-                    "mensalidade" : 0
-                },
-				{
-                    "nome_aluno":  "João",
-                    "rm" : "222",
-                    "curso" : "Engenharia de Software" ,
-                    "mensalidade" : 1999.90
-                }
-]
-
-def menu_inicial(opc):
-    while opc != 0:
-        lista_alunos.extend(dados_alunos)
+def menu_inicial(opcao):
+    while opcao != 0:
         exibir_titulo_inicial()
         print("   1 - Adicionar aluno")
         print("   2 - Atualizar aluno")
@@ -28,8 +13,8 @@ def menu_inicial(opc):
         print("   6 - Salvar lista em arquivo Json")
         print("   0 - Encerrar Programa")
         try:
-            opc = int(input("Selecione uma opção: "))
-            match opc:
+            opcao = int(input("Selecione uma opção: "))
+            match opcao:
                 case 1:
                     adicionar_aluno()
                 case 2:
@@ -48,14 +33,13 @@ def menu_inicial(opc):
                 case _:
                     exibicao_erro("Opção inválida!!!")
         except ValueError:
-            exibicao_erro("Valor inválido, digite um número dentre as opções!!!")
+            exibicao_erro("Valor inválido, digite um número entre as opções do menu!!!")
 
 def informacoes_aluno(aluno):
-    print("\n----------------------------------------")
+    print("\n-------------------------------------------")
     print(f"    Nome: {aluno["nome_aluno"]} | RM{aluno["rm"]}")
     print(f"    Curso: {aluno["curso"]} | Mensalidade: R${aluno["mensalidade"]}")
-    print("----------------------------------------")
-
+    print("-------------------------------------------")
 
 def validacao_curso():
     curso = input(f"Digite o curso do aluno: ")
@@ -91,7 +75,7 @@ def atualizar_aluno():
             nome = validacao_nome()
 
             print(f"Curso: {aluno["curso"]}")
-            curso = input("Digite o novo curso do aluno: ")
+            curso = validacao_curso()
 
             print(f"Mensalidade: R${aluno["mensalidade"]}")
             mensalidade = validacao_mensalidade()
@@ -154,8 +138,8 @@ def validacao_nome():
     while condicao:
         nome = input("\nDigite o nome do novo aluno: ")
         if not condicao:
-            return nome
-    return nome
+            return nome.upper
+    return nome.upper
 
 def validacao_rm():
     rm_digitado = input_rm()
@@ -170,6 +154,14 @@ def validacao_rm():
                     return rm_digitado
 
     return rm_digitado
+def validacao_curso():
+    curso = input("Digite o novo curso do aluno: ")
+    condicao = (curso == "")
+    while condicao:
+        curso = input("Digite o novo curso do aluno: ")
+        if not condicao:
+            return curso.upper()
+    return curso.upper()
 
 def validacao_mensalidade():
     mensalidade = float(input(f"Digite o valor da mensalidade do aluno: "))
@@ -188,7 +180,5 @@ def input_rm():
 #     return dados_alunos
 #
 # lista_alunos.append(leitura_inicial_json())
-# for aluno in lista_alunos:
-#     informacoes_aluno(aluno)
 
-menu_inicial(opc)
+menu_inicial(opcao)
