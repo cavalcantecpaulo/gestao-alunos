@@ -37,7 +37,7 @@ def menu_inicial(opcao):
 
 def informacoes_aluno(aluno):
     print(f"\n    Nome: {aluno["nome_aluno"]} | RM{aluno["rm"]}")
-    print(f"    Curso: {aluno["curso"]} | Mensalidade: R${aluno["mensalidade"]}")
+    print(f"    Curso: {aluno["curso"]} | Mensalidade: R${aluno["mensalidade"]:.2f}")
 
 def adicionar_aluno():
     nome = validacao_nome()
@@ -124,47 +124,53 @@ def busca_aluno_rm(rm):
         return None
 
 def validacao_nome():
-    nome = input("\nDigite o nome do novo aluno: ")
-    condicao = (nome == "")
-    while condicao:
+    nome_valido = False
+    while nome_valido is False:
         nome = input("\nDigite o nome do novo aluno: ")
+        condicao = ((nome == "") or (not nome.isalpha()))
         if not condicao:
             return nome.upper()
-    return nome.upper()
+        else:
+            exibicao_erro("Nome inválido!!! Digite apenas letras e não deixe o campo vazio!!!")
 
 def validacao_rm():
     rm_digitado = input_rm()
-
-    for aluno in lista_alunos:
-        condicao = aluno["rm"] == rm_digitado
-        if condicao:
-            while condicao:
-                exibicao_erro("RM existente!!!")
-                rm_digitado = input_rm()
-                if aluno["rm"] != rm_digitado:
-                    return rm_digitado
+    aluno_encontrado = busca_aluno_rm(rm_digitado)
+    while aluno_encontrado is not None:
+        exibicao_erro("RM existente!!!")
+        rm_digitado = input_rm()
+        aluno_encontrado = busca_aluno_rm(rm_digitado)
+        if aluno_encontrado is None:
+            return rm_digitado
     return rm_digitado
 
 def validacao_curso():
-    curso = input("Digite o novo curso do aluno: ")
+    curso = input("\nDigite o novo curso do aluno: ")
     condicao = (curso == "")
     while condicao:
-        curso = input("Digite o novo curso do aluno: ")
+        curso = input("\nDigite o novo curso do aluno: ")
         if not condicao:
             return curso.upper()
     return curso.upper()
 
 def validacao_mensalidade():
-    mensalidade = float(input(f"Digite o valor da mensalidade do aluno: "))
+    mensalidade = float(input(f"\nDigite o valor da mensalidade do aluno: "))
     while mensalidade<0:
             exibicao_erro("Valor de mensalidade inválido!!!")
-            mensalidade = float(input(f"Digite o valor da mensalidade do aluno: "))
+            mensalidade = float(input(f"\nDigite o valor da mensalidade do aluno: "))
             return mensalidade
     return mensalidade
 
 def input_rm():
-    rm = input(f"Digite o RM do aluno: ")
-    return rm
+    nome_valido = False
+    while nome_valido is False:
+        try:
+            rm = int(input(f"\nDigite o RM do aluno: "))
+            nome_valido = True
+            return rm
+        except ValueError:
+            exibicao_erro("\nDigite um valor inteiro no RM!!!")
+
 
 # def leitura_inicial_json():
 #     arquivo_json = open("../dados_alunos.json", "r")
