@@ -36,10 +36,8 @@ def menu_inicial(opcao):
             exibicao_erro("Valor inválido, digite um número entre as opções do menu!!!")
 
 def informacoes_aluno(aluno):
-    print("\n-------------------------------------------")
-    print(f"    Nome: {aluno["nome_aluno"]} | RM{aluno["rm"]}")
+    print(f"\n    Nome: {aluno["nome_aluno"]} | RM{aluno["rm"]}")
     print(f"    Curso: {aluno["curso"]} | Mensalidade: R${aluno["mensalidade"]}")
-    print("-------------------------------------------")
 
 def adicionar_aluno():
     nome = validacao_nome()
@@ -58,44 +56,39 @@ def adicionar_aluno():
 
 def atualizar_aluno():
     rm_digitado = requisicao_aluno("atualizar")
+    aluno_encontrado = busca_aluno_rm(rm_digitado)
+    if aluno_encontrado is not None:
+        print(f"\nNome: {aluno_encontrado["nome_aluno"]}")
+        nome = validacao_nome()
 
-    for aluno in lista_alunos:
-        condicao = aluno["rm"] == rm_digitado
-        if condicao:
-            print(f"\nNome: {aluno["nome_aluno"]}")
-            nome = validacao_nome()
+        print(f"Curso: {aluno_encontrado["curso"]}")
+        curso = validacao_curso()
 
-            print(f"Curso: {aluno["curso"]}")
-            curso = validacao_curso()
+        print(f"Mensalidade: R${aluno_encontrado["mensalidade"]}")
+        mensalidade = validacao_mensalidade()
 
-            print(f"Mensalidade: R${aluno["mensalidade"]}")
-            mensalidade = validacao_mensalidade()
+        aluno_encontrado["nome_aluno"] = nome
+        aluno_encontrado["curso"] = curso
+        aluno_encontrado["mensalidade"] = mensalidade
 
-            aluno["nome_aluno"] = nome
-            aluno["curso"] = curso
-            aluno["mensalidade"] = mensalidade
-
-            print("\nInformações de aluno atualizada com sucesso!")
-            break
+        print("\nInformações de aluno atualizada com sucesso!")
     else:
         exibicao_erro("\nRM não encontrado!!!!")
 
 def excluir_aluno():
     rm_digitado = requisicao_aluno("excluir")
-    for aluno in lista_alunos:
-        if aluno["rm"] == rm_digitado:
-            lista_alunos.remove(aluno)
-            print("\nAluno excluído com sucesso!")
-            break
+    aluno_encontrado = busca_aluno_rm(rm_digitado)
+    if aluno_encontrado is not None:
+        lista_alunos.remove(aluno_encontrado)
+        print("\nAluno excluído com sucesso!")
     else:
         exibicao_erro("\nRM não encontrado!!!!")
 
 def exibir_aluno():
     rm_digitado = requisicao_aluno("exibir")
-    for aluno in lista_alunos:
-        if aluno["rm"] == rm_digitado:
-            informacoes_aluno(aluno)
-            break
+    aluno_encontrado = busca_aluno_rm(rm_digitado)
+    if aluno_encontrado is not None:
+        informacoes_aluno(aluno_encontrado)
     else:
         exibicao_erro("\nRM não encontrado!!!!")
 
@@ -123,14 +116,21 @@ def exibir_titulo_inicial():
 def exibicao_erro(erro):
     print(f"\nErro: {erro}")
 
+def busca_aluno_rm(rm):
+    for aluno in lista_alunos:
+        if aluno["rm"] == rm:
+            return aluno
+    else:
+        return None
+
 def validacao_nome():
     nome = input("\nDigite o nome do novo aluno: ")
     condicao = (nome == "")
     while condicao:
         nome = input("\nDigite o nome do novo aluno: ")
         if not condicao:
-            return nome.upper
-    return nome.upper
+            return nome.upper()
+    return nome.upper()
 
 def validacao_rm():
     rm_digitado = input_rm()
@@ -143,7 +143,6 @@ def validacao_rm():
                 rm_digitado = input_rm()
                 if aluno["rm"] != rm_digitado:
                     return rm_digitado
-
     return rm_digitado
 
 def validacao_curso():
@@ -162,6 +161,7 @@ def validacao_mensalidade():
             mensalidade = float(input(f"Digite o valor da mensalidade do aluno: "))
             return mensalidade
     return mensalidade
+
 def input_rm():
     rm = input(f"Digite o RM do aluno: ")
     return rm
@@ -172,5 +172,4 @@ def input_rm():
 #     return dados_alunos
 #
 # lista_alunos.append(leitura_inicial_json())
-
 menu_inicial(opcao)

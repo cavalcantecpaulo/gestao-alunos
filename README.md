@@ -212,19 +212,27 @@ Resumo do fluxo (apenas texto, versão limpa e legível):
 - Uso de `match/case` (Python 3.10+) para roteamento do menu
 - Nomes descritivos e tratamento centralizado de erros
 
+### Regras e boas práticas adicionais (v1.3.4)
+- RM (Registro de Matrícula) é o identificador único do aluno; o sistema valida duplicação ao cadastrar (`validacao_rm()` / `busca_aluno_rm()`).
+- Campos obrigatórios: `nome_aluno`, `rm`, `curso`, `mensalidade`. Valide entradas vazias antes de aceitar.
+- Normalização: o campo `curso` é armazenado em MAIÚSCULAS para facilitar buscas e padronização.
+- Tratamento de tipos: converter e validar `mensalidade` com tratamento de exceções (evitar crashes por entradas inválidas).
+- Persistência segura: `salvando_lista_json()` deve gravar os dados com backup/validação futura antes de sobrescrever (melhoria recomendada).
+- UI/UX: mensagens descritivas para erros e confirmações (ex.: RM não encontrado / Aluno adicionado com sucesso).
+
 ## 🚧 Em Desenvolvimento
 
 Funcionalidades e melhorias continuam em desenvolvimento. Algumas melhorias recentes estão listadas abaixo.
 
-### ✅ Implementações Recentes (v1.3.3)
+### ✅ Implementações Recentes (v1.3.4)
 - **Modularização completa das validações de entrada**
-  - Separação em 4 módulos independentes: `validacao_nome()`, `validacao_rm()`, `validacao_curso()`, `validacao_mensalidade()`
-  - Cada módulo encapsula a lógica de validação de um campo específico
-  - Funções reutilizáveis em `adicionar_aluno()` e `atualizar_aluno()`
-- Validação de RM único e evita duplicação
-- Persistência em JSON com `salvando_lista_json()`
-- Funções auxiliares de UI (`exibir_titulo_inicial()`)
-- Tratamento centralizado de erros (`exibicao_erro()`)
+  - Manutenção das 4 validações independentes: `validacao_nome()`, `validacao_rm()`, `validacao_curso()`, `validacao_mensalidade()` (reutilizáveis).
+- **Inclusão da função interna `busca_aluno_rm(rm)`**
+  - Finalidade: localizar e retornar o dicionário do aluno a partir do RM informado; usada por `atualizar_aluno()`, `excluir_aluno()` e `exibir_aluno()`.
+- **Melhorias de robustez e UX**
+  - Mensagens de erro mais claras, confirmação de ações e validação preventiva no input.
+- **Persistência/Arquivos**
+  - `salvando_lista_json()` para exportar os dados; sugestão de carregamento inicial automático (próxima melhoria).
 
 ## 🔮 Possíveis Próximas Adições
 
@@ -258,4 +266,4 @@ O projeto é uma evolução de um exercício de sala de aula que foi escalado pa
 
 ---
 
-**Status**: 🔄 Em Desenvolvimento | **Versão**: 1.3.3 | **Última atualização**: 02/03/2025
+**Status**: 🔄 Em Desenvolvimento | **Versão**: 1.3.4 | **Última atualização**: 02/03/2026
