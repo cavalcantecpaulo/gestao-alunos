@@ -35,15 +35,14 @@ def menu_inicial(opc):
 
 def informacoes_aluno(aluno):
     print("\n-----------------------------------")
-    print(f"    Nome: {aluno["nome_aluno"]}")
-    print(f"    RM do aluno: {aluno["rm"]}")
+    print(f"    Nome: {aluno["nome_aluno"]} | RM{aluno["rm"]}")
     print(f"    Curso: {aluno["curso"]}")
     print(f"    Valor da Mensalidade: R${aluno["mensalidade"]}")
     print("-----------------------------------")
 
 def adicionar_aluno():
     nome = input("\nDigite o nome do novo aluno: ")
-    rm = input(f"Digite o RM do aluno ({nome}): ")
+    rm = verificacao_rm()
     curso = input(f"Digite o curso do aluno ({nome}): ")
     valor_mensalidade = float(input(f"Digite a mensalidade do aluno ({nome}): "))
 
@@ -91,8 +90,8 @@ def exibir_aluno():
     for aluno in lista_alunos:
         if aluno["rm"] == rmDigitado:
             informacoes_aluno(aluno)
-        else:
-            exibicao_erro("\nRM não encontrado!!!!")
+    else:
+        exibicao_erro("\nRM não encontrado!!!!")
 
 def exibir_alunos():
     if len(lista_alunos) == 0:
@@ -109,7 +108,7 @@ def requisicao_aluno(acao):
 def salvando_lista_json():
     with open("dados_alunos.json", "w") as dados_alunos:
         json.dump(lista_alunos, dados_alunos)
-    print("\nSalvando lista em arquivo json... ")
+    print("\nSalvando lista de alunos em arquivo json... ")
 
 def exibir_titulo_inicial():
     print("\n--- CRUD Alunos Python ---")
@@ -117,6 +116,24 @@ def exibir_titulo_inicial():
 
 def exibicao_erro(erro):
     print(f"\nErro: {erro}")
+
+def verificacao_rm():
+    rm_digitado = input_rm()
+
+    for aluno in lista_alunos:
+        condicao = aluno["rm"] == rm_digitado
+        if condicao:
+            while condicao:
+                exibicao_erro("RM existente!!!")
+                rm_digitado = input_rm()
+                if aluno["rm"] != rm_digitado:
+                    return rm_digitado
+
+    return rm_digitado
+
+def input_rm():
+    rm = input(f"Digite o RM do aluno: ")
+    return rm
 
 # def leitura_inicial_json():
 #     arquivo_json = open("../dados_alunos.json", "r")

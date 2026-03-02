@@ -20,6 +20,7 @@ O sistema de Gestão de Alunos oferece as seguintes operações:
 ### 1️⃣ **Adicionar Aluno**
 - Registrar um novo aluno no sistema
 - Informações solicitadas: Nome, RM (Registro de Matrícula), Curso e Mensalidade
+- Validação de RM único — impede duplicação de registros de matrícula
 - Armazenamento em uma lista de dicionários
 
 ### 2️⃣ **Atualizar Aluno**
@@ -61,7 +62,7 @@ O sistema de Gestão de Alunos oferece as seguintes operações:
 1. Clone ou baixe o projeto (exemplo):
 
 ```powershell
-git clone https://github.com/seu-usuario/gestao_alunos.git; cd gestao_alunos
+git clone https://github.com/cavalcantecpaulo/gestao_alunos.git; cd gestao_alunos
 ```
 
 2. Execute o programa a partir da pasta do repositório:
@@ -98,19 +99,20 @@ aluno = {
 }
 ```
 
-A lista `lista_alunos` armazena todos os dicionários de alunos cadastrados.
+A lista `lista_alunos\ armazena todos os dicionários de alunos cadastrados.
 
 ### Funções Principais (resumo)
 
 - `menu_inicial(opc)` — controle de fluxo e roteamento
-- `adicionar_aluno()` — captura e adiciona um novo aluno
+- `adicionar_aluno()` — captura e adiciona um novo aluno com validação de RM único
 - `atualizar_aluno()` — atualiza dados de um aluno existente
 - `excluir_aluno()` — remove aluno por RM
 - `exibir_aluno()` — exibe informações detalhadas de um aluno
 - `exibir_alunos()` — lista todos os alunos
 - `requisicao_aluno(acao)` — solicita RM de forma contextualizada (DRY)
+- `rm_existente(rm)` — valida se um RM já existe no sistema
 - `informacoes_aluno(aluno)` — formata a exibição de dados
-- `salvando_lista_json()` — persiste dados em `dados_alunos.json`
+- `salvando_lista_json()` — persiste dados em \`dados_alunos.json\`
 
 ## 🔧 Detalhes da Modularização
 
@@ -160,6 +162,7 @@ Resumo do fluxo (apenas texto, versão limpa e legível):
 ## 💡 Boas Práticas Implementadas
 
 - Modularização e funções com responsabilidades claras
+- Validação de RM único para integridade de dados
 - Mensagens de feedback claras e consistentes
 - Persistência em JSON para durabilidade dos dados
 - Uso de `match/case` (Python 3.10+) para roteamento do menu
@@ -175,13 +178,13 @@ Funcionalidades e melhorias continuam em desenvolvimento. Algumas melhorias rece
 - Tratamento centralizado de erros (`exibicao_erro()`)
 - Melhorias de UX e mensagens de feedback
 
-> Versão atualizada: 1.3.1 — atualização para refletir ajustes no README e pequenas melhorias no projeto.
+> Versão atualizada: 1.3.1 — adição de validação de RM único e melhorias gerais no projeto.
 
 ## 🔮 Possíveis Próximas Adições
 
 ### Curto Prazo
 - [ ] Carregamento automático de dados ao iniciar
-- [ ] Validações adicionais (RM único, formatos)
+- [ ] Validações adicionais (formatos, campos vazios)
 - [ ] Busca e filtro por curso/nome/mensalidade
 
 ### Médio Prazo
@@ -199,6 +202,7 @@ Funcionalidades e melhorias continuam em desenvolvimento. Algumas melhorias rece
 Este projeto consolidou conceitos fundamentais:
 - Estruturas de dados (listas e dicionários)
 - Controle de fluxo e entrada interativa
+- Validação e integridade de dados
 - Modularização, reutilização e boas práticas de design
 - Persistência com JSON e manipulação de arquivos
 
@@ -208,4 +212,4 @@ O projeto é uma evolução de um exercício de sala de aula que foi escalado pa
 
 ---
 
-**Status**: 🔄 Em Desenvolvimento | **Versão**: 1.3.1 | **Última atualização**: 01/03/2026
+**Status**: 🔄 Em Desenvolvimento | **Versão**: 1.3.1 | **Última atualização**: 02/03/2025
