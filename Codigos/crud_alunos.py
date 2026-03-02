@@ -2,8 +2,23 @@ import json
 lista_alunos = []
 opc = -1
 
+dados_alunos = [ {
+                    "nome_aluno":  "Paulo",
+                    "rm" : "123",
+                    "curso" : "1TDSPS" ,
+                    "mensalidade" : 0
+                },
+				{
+                    "nome_aluno":  "João",
+                    "rm" : "222",
+                    "curso" : "Engenharia de Software" ,
+                    "mensalidade" : 1999.90
+                }
+]
+
 def menu_inicial(opc):
     while opc != 0:
+        lista_alunos.extend(dados_alunos)
         exibir_titulo_inicial()
         print("   1 - Adicionar aluno")
         print("   2 - Atualizar aluno")
@@ -34,11 +49,10 @@ def menu_inicial(opc):
                 exibicao_erro("Opção inválida!!!")
 
 def informacoes_aluno(aluno):
-    print("\n-----------------------------------")
+    print("\n----------------------------------------")
     print(f"    Nome: {aluno["nome_aluno"]} | RM{aluno["rm"]}")
-    print(f"    Curso: {aluno["curso"]}")
-    print(f"    Valor da Mensalidade: R${aluno["mensalidade"]}")
-    print("-----------------------------------")
+    print(f"    Curso: {aluno["curso"]} | Mensalidade: R${aluno["mensalidade"]}")
+    print("----------------------------------------")
 
 def adicionar_aluno():
     nome = input("\nDigite o nome do novo aluno: ")
@@ -56,9 +70,11 @@ def adicionar_aluno():
     print("\nAluno adicionado com sucesso!")
 
 def atualizar_aluno():
-    rmDigitado = requisicao_aluno("atualizar")
+    rm_digitado = requisicao_aluno("atualizar")
+
     for aluno in lista_alunos:
-        if aluno["rm"] == rmDigitado:
+        condicao = aluno["rm"] == rm_digitado
+        if condicao:
             print(f"\nNome: {aluno["nome_aluno"]}")
             nome = input("Digite o novo nome do aluno: ")
 
@@ -73,23 +89,26 @@ def atualizar_aluno():
             aluno["mensalidade"] = valor_mensalidade
 
             print("\nInformações de aluno atualizada com sucesso!")
-        else:
-            exibicao_erro("\nRM não encontrado!!!!")
+            break
+    else:
+        exibicao_erro("\nRM não encontrado!!!!")
 
 def excluir_aluno():
-    rmDigitado = requisicao_aluno("excluir")
+    rm_digitado = requisicao_aluno("excluir")
     for aluno in lista_alunos:
-        if aluno["rm"] == rmDigitado:
+        if aluno["rm"] == rm_digitado:
             lista_alunos.remove(aluno)
             print("\nAluno excluído com sucesso!")
-        else:
-            exibicao_erro("\nRM não encontrado!!!!")
+            break
+    else:
+        exibicao_erro("\nRM não encontrado!!!!")
 
 def exibir_aluno():
-    rmDigitado = requisicao_aluno("exibir")
+    rm_digitado = requisicao_aluno("exibir")
     for aluno in lista_alunos:
-        if aluno["rm"] == rmDigitado:
+        if aluno["rm"] == rm_digitado:
             informacoes_aluno(aluno)
+            break
     else:
         exibicao_erro("\nRM não encontrado!!!!")
 
