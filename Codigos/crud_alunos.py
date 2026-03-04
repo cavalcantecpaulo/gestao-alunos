@@ -154,11 +154,13 @@ def validacao_curso():
     return curso.upper()
 
 def validacao_mensalidade():
+    condicao = mensalidade<0
     mensalidade = float(input(f"\nDigite o valor da mensalidade do aluno: "))
-    while mensalidade<0:
+    while condicao:
             exibicao_erro("Valor de mensalidade inválido!!!")
             mensalidade = float(input(f"\nDigite o valor da mensalidade do aluno: "))
-            return mensalidade
+            if not condicao:
+                return mensalidade
     return mensalidade
 
 def input_rm():
@@ -166,8 +168,11 @@ def input_rm():
     while nome_valido is False:
         try:
             rm = int(input(f"\nDigite o RM do aluno: "))
-            nome_valido = True
-            return rm
+            if rm>0 and  len(str(rm)) < 7:
+                nome_valido = True
+                return rm
+            else:
+                exibicao_erro("RM inválido!!!")
         except ValueError:
             exibicao_erro("\nDigite um valor inteiro no RM!!!")
 

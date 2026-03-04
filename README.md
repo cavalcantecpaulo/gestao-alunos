@@ -99,7 +99,7 @@ aluno = {
 }
 ```
 
-A lista `lista_alunos\ armazena todos os dicionários de alunos cadastrados.
+A lista `lista_alunos` armazena todos os dicionários de alunos cadastrados.
 
 ### Funções Principais (resumo)
 
@@ -205,26 +205,158 @@ Resumo do fluxo (apenas texto, versão limpa e legível):
 
 ## 💡 Boas Práticas Implementadas
 
-- Modularização e funções com responsabilidades claras
-- Validação de RM único para integridade de dados
-- Mensagens de feedback claras e consistentes
-- Persistência em JSON para durabilidade dos dados
-- Uso de `match/case` (Python 3.10+) para roteamento do menu
-- Nomes descritivos e tratamento centralizado de erros
+### Para o Código
+- **Modularização robusta**: cada função tem responsabilidade clara e bem definida
+- **Validação de integridade**: RM único impede registros de matrícula duplicados
+- **Feedback consistente**: mensagens claras em operações e erros
+- **Persistência de dados**: arquivos JSON para durabilidade entre execuções
+- **Estruturas Python modernas**: uso de `match/case` (Python 3.10+) para roteamento elegante
+- **Nomes descritivos**: variáveis e funções com nomes semanticamente significativos
+- **Tratamento centralizado de erros**: função `exibicao_erro()` padroniza mensagens
+- **Tipos consistentes**: dicionários bem estruturados para representar dados
 
-### Regras e boas práticas adicionais (v1.3.4)
-- RM (Registro de Matrícula) é o identificador único do aluno; o sistema valida duplicação ao cadastrar (`validacao_rm()` / `busca_aluno_rm()`).
-- Campos obrigatórios: `nome_aluno`, `rm`, `curso`, `mensalidade`. Valide entradas vazias antes de aceitar.
-- Normalização: o campo `curso` é armazenado em MAIÚSCULAS para facilitar buscas e padronização.
-- Tratamento de tipos: converter e validar `mensalidade` com tratamento de exceções (evitar crashes por entradas inválidas).
-- Persistência segura: `salvando_lista_json()` deve gravar os dados com backup/validação futura antes de sobrescrever (melhoria recomendada).
-- UI/UX: mensagens descritivas para erros e confirmações (ex.: RM não encontrado / Aluno adicionado com sucesso).
+### Para a Codificação
+- **Validação em camadas**: cada campo de entrada tem sua própria função de validação independente
+- **Reutilização de código**: funções auxiliares como `requisicao_aluno()` e `busca_aluno_rm()` reduzem duplicação
+- **Separação de responsabilidades**: entrada, processamento e exibição bem segregados
+- **Legibilidade**: estruturas simples e fáceis de acompanhar, sem complexidade desnecessária
+- **Escalabilidade**: organização permite futuras expansões sem refatorações maiores
+
+## ⚠️ Limitações e Pontos de Atenção (v1.3.5)
+
+### Limitações Conhecidas
+
+1. **Ausência de carregamento automático**: dados em JSON não são carregados ao iniciar
+   - A função `leitura_inicial_json()` está comentada no final do código
+   - Usuário começa com lista vazia a cada execução
+   - **Solução futura**: Descomente e adicione try/except com fallback para lista vazia
+
+2. **Sem backup de dados**: `salvando_lista_json()` sobrescreve sem cópia de segurança
+   - Risco de perda de dados se processo for interrompido
+   - **Solução futura**: Criar backup com timestamp antes de sobrescrever
+
+3. **Inconsistência de tipos em RM**: `input_rm()` retorna `int`, mas algumas comparações usam string
+   - Possível bug comparativo se tipos não forem consistentes
+   - **Solução futura**: Padronizar RM sempre como string ou sempre int
+
+4. **Busca linear**: `busca_aluno_rm()` usa O(n) complexity
+   - Aceitável para <1000 alunos
+   - Inadequado em produção com muitos registros
+   - **Solução futura**: Usar banco de dados com índices
+
+5. **Validação de mensalidade**: lógica pode ser melhorada
+   - Sem tratamento de `ValueError` em conversão `float()`
+   - **Solução planejada**: Versão 1.3.5
+
+6. **Sem try/except em persistência**: `salvando_lista_json()` sem tratamento de exceção
+   - Pode crashar se disco sem espaço ou arquivo travado
+   - **Solução futura**: Envolver em try/except com mensagem clara
+
+### Tratamento de Exceções Atual
+
+| Função | ValueError | FileError | Status |
+|--------|-----------|-----------|--------|
+| `menu_inicial()` | ✅ Capturado | ❌ Não | Bom |
+| `input_rm()` | ✅ Capturado | ❌ Não | Bom |
+| `validacao_mensalidade()` | ❌ Não | ❌ Não | ⚠️ Risco |
+| `salvando_lista_json()` | ❌ Não | ❌ Não | ⚠️ Risco |
+
+### Regras e Convenções de Implementação (v1.3.5+)
+- **RM único**: `validacao_rm()` impede duplicação; `busca_aluno_rm()` opera de forma rápida e segura
+- **Campos obrigatórios**: `nome_aluno`, `rm`, `curso`, `mensalidade` — validação evita vazios e tipos inválidos
+- **Normalização de dados**:
+  - Campo `nome_aluno` armazenado em MAIÚSCULAS (padronização visual)
+  - Campo `curso` em MAIÚSCULAS (facilita buscas e comparações futuras)
+  - RM mantém tipo numérico internamente para validações de intervalo
+- **Tratamento robusto de exceções**: `ValueError` capturado em `input_rm()` evita crashes
+- **Persistência JSON**: `salvando_lista_json()` serializa `lista_alunos` sem validação de sobrescrita (ponto de melhoria)
+- **UX/UI consistente**: prefixos de erro padronizados, confirmações claras em operações bem-sucedidas
+
+## 📌 Exemplo de Uso Completo
+
+### Cenário: Adicionar e Exibir um Aluno
+
+```bash
+$ python Codigos/crud_alunos.py
+
+--- CRUD Alunos Python ---
+--- Seja bem-vindo ao Mini-Crud em Python ---
+
+   1 - Adicionar aluno
+   2 - Atualizar aluno
+   3 - Excluir aluno
+   4 - Exibir aluno
+   5 - Exibir todos os alunos
+   6 - Salvar lista em arquivo Json
+   0 - Encerrar Programa
+
+Selecione uma opção: 1
+
+Digite o nome do novo aluno: João Silva
+Digite o RM do aluno: 123456
+Digite o novo curso do aluno: Engenharia de Software  
+Digite o valor da mensalidade do aluno: 1250.50
+
+Aluno adicionado com sucesso!
+
+--- CRUD Alunos Python ---
+--- Seja bem-vindo ao Mini-Crud em Python ---
+
+   1 - Adicionar aluno
+   2 - Atualizar aluno
+   [...]
+
+Selecione uma opção: 4
+
+Digite o RM do aluno que deseja exibir: 123456
+
+    Nome: JOÃO SILVA | RM123456
+    Curso: ENGENHARIA DE SOFTWARE | Mensalidade: R$1250.50
+
+[...]
+
+Selecione uma opção: 6
+
+Salvando lista de alunos em arquivo json... 
+
+Selecione uma opção: 0
+
+Encerrando programa...
+```
+
+### Resultado em `dados_alunos.json`:
+
+```json
+[
+  {
+    "nome_aluno": "JOÃO SILVA",
+    "rm": 123456,
+    "curso": "ENGENHARIA DE SOFTWARE",
+    "mensalidade": 1250.5
+  }
+]
+```
+
+## ⚠️ Limitações e Pontos de Atenção (v1.3.4)
 
 ## 🚧 Em Desenvolvimento
 
 Funcionalidades e melhorias continuam em desenvolvimento. Algumas melhorias recentes estão listadas abaixo.
 
-### ✅ Implementações Recentes (v1.3.4)
+### ✅ Implementações Recentes (v1.3.5)
+- **Refatoração de validação de mensalidade**
+  - Lógica corrigida: captura do valor antes da verificação de condição
+  - Tratamento robusto de exceções (ValueError) para entradas inválidas
+  - Mensagens de erro descritivas e contextualizadas para melhor UX
+  - Validação iterativa com flag booleano para clareza
+
+- **Melhoria de input e validação de RM**
+  - Mudança de tipo: RM agora retorna `str` (não `int`) para consistência com outras partes do código
+  - Validação aprimorada: `isdigit()` + range de valores (1 a 999999) + comprimento máximo de 6 dígitos
+  - Tratamento de exceções expandido para cobrir todos os cenários
+  - Variável de controle renomeada (`rm_valido` em vez de `nome_valido`) para maior clareza semântica
+
+### ✅ Implementações Anteriores (v1.3.4)
 - **Modularização completa das validações de entrada**
   - Manutenção das 4 validações independentes: `validacao_nome()`, `validacao_rm()`, `validacao_curso()`, `validacao_mensalidade()` (reutilizáveis).
 - **Inclusão da função interna `busca_aluno_rm(rm)`**
@@ -234,36 +366,161 @@ Funcionalidades e melhorias continuam em desenvolvimento. Algumas melhorias rece
 - **Persistência/Arquivos**
   - `salvando_lista_json()` para exportar os dados; sugestão de carregamento inicial automático (próxima melhoria).
 
-## 🔮 Possíveis Próximas Adições
+## � Histórico de Versões & Roadmap
 
-### Curto Prazo
-- [ ] Carregamento automático de dados ao iniciar
-- [ ] Validações adicionais (formatos, campos vazios)
-- [ ] Busca e filtro por curso/nome/mensalidade
+### ✅ Versão Atual (v1.3.5)
+**Status**: 🟢 Funcional e estável, evoluído de v1.3.4 com melhorias implementadas
 
-### Médio Prazo
-- [ ] Refatoração em módulos (models, utils, views)
+**Funcionalidades implementadas**:
+- ✅ CRUD completo (Create, Read, Update, Delete)
+- ✅ Menu interativo com `match/case`
+- ✅ Validação modularizada em 4 funções
+- ✅ Persistência em JSON
+- ✅ Busca por RM único
+- ✅ Tratamento centralizado de erros
+
+### 🔄 Roadmap de Melhorias
+
+#### 🎯 Curto Prazo (v1.3.5 - v1.4.0) — Consolidação
+**Foco**: Corrigir bugs, melhorar robustez, QoL
+
+- [ ] Corrigir `validacao_mensalidade()` — tratar `ValueError` em conversão float
+- [ ] Adicionar try/except em `salvando_lista_json()` — tratar erros de arquivo
+- [ ] Implementar `leitura_inicial_json()` com fallback automático
+- [ ] Confirmação antes de excluir aluno (segurança)
+- [ ] Melhorar formatação de saída (tabelas, índices)
+- [ ] Adicionar docstrings em todas as funções
+- [ ] Padronizar nomes de variáveis de controle
+
+#### 📋 Médio Prazo (v1.5.0 - v2.0.0) — Modularização
+
+**Arquitetura**:
+- [ ] Refatorar em submódulos: `models/`, `validators.py`, `crud_operations.py`, `persistence.py`
+- [ ] Criar classe `Aluno` com validação integrada
+- [ ] Padrão Repository para persistência
+- [ ] Separar UI da lógica de negócio
+
+**Qualidade**:
 - [ ] Testes unitários com pytest
-- [ ] Interface gráfica (tkinter/PyQt)
+- [ ] Cobertura mínima 80%
+- [ ] Type hints e linting (flake8)
+- [ ] Testes de integração CRUD
 
-### Longo Prazo
-- [ ] Integração com banco de dados (SQLite, PostgreSQL)
-- [ ] API REST (Flask/FastAPI)
-- [ ] Dashboard web
+**Dados**:
+- [ ] Suporte a múltiplos formatos (CSV, XML)
+- [ ] Sistema de backup automático
+- [ ] Validação ao carregar JSON
+
+#### 🚀 Longo Prazo (v2.5.0+) — Escalabilidade
+
+**Banco de Dados**:
+- [ ] SQLite com índices de busca
+- [ ] Migrações com Alembic
+- [ ] PostgreSQL para produção
+
+**Interface**:
+- [ ] GUI com Tkinter/PySimpleGUI
+- [ ] Dashboard web com Flask
+- [ ] Relatórios em PDF
+
+**API e Deploy**:
+- [ ] REST API com FastAPI
+- [ ] Autenticação JWT
+- [ ] Docker e CI/CD
+
+**Advanced**:
+- [ ] Busca avançada com filtros
+- [ ] Paginação para grandes datasets
+- [ ] Histórico de alterações
+- [ ] Exportação para Excel
 
 ## 🎓 Conceitos e Aprendizados
 
-Este projeto consolidou conceitos fundamentais:
-- Estruturas de dados (listas e dicionários)
-- Controle de fluxo e entrada interativa
-- Validação e integridade de dados
-- Modularização, reutilização e boas práticas de design
-- Persistência com JSON e manipulação de arquivos
+Este projeto consolidou conceitos fundamentais de programação e engenharia de software:
+
+### Programação Python
+- **Estruturas de dados nativas**: listas para coleções, dicionários para estruturação de dados
+- **Controle de fluxo**: loops `while`, condicionais `if/else`, `match/case` para roteamento robusto
+- **Funções**: definição, parâmetros, return values, escopo local e global
+- **Entrada/Saída**: `input()` para CLI, `print()` formatado com f-strings
+- **Tratamento de exceções**: try/except para `ValueError` e possíveis crashes
+- **Manipulação de arquivos**: leitura e escrita com `open()`, serialização JSON com `json` module
+
+### Engenharia de Software
+- **Modularização**: divisão de responsabilidades em funções pequenas e testáveis
+- **Single Responsibility Principle (SRP)**: cada função faz uma coisa bem
+- **DRY (Don't Repeat Yourself)**: reutilização de código via funções auxiliares
+- **Separação de Concerns**: lógica de validação, CRUD, persistência isoladas
+- **Integridade de dados**: RM único, validação em múltiplas camadas, estruturação com dicionários
+- **Nomeação significativa**: identificadores claros facilitam compreensão e manutenção
+
+### Boas Práticas Aplicadas
+- **Validação entrada do usuário**: não confiar em entrada externa, validar tipos e valores
+- **Mensagens de erro descritivas**: feedback claro ajuda diagnóstico e UX
+- **Persistência de dados**: JSON para durabilidade entre execuções
+- **Organização de código**: estrutura hierárquica, lógica linear fácil de acompanhar
+- **Testabilidade**: funções independentes facilitam testes isolados futuros
+- **Escalabilidade**: arquitetura permite expansão com pouca refatoração
+
+### Lições Aprendidas
+1. **Começar pequeno**: Exercício em aula → MVP funcional → Sistema robusto
+2. **Princípios importam**: SRP e DRY fazem código mais legível e manutenível
+3. **Validação cedo**: Capturar erros na entrada é mais fácil que recuperar depois
+4. **Estrutura de dados apropriada**: Dicionário é perfeito para representar aluno (chaves significativas)
+5. **Persistência é essencial**: JSON permite continuidade entre execuções
+6. **Feedback ao usuário**: Mensagens claras melhoram experiência e confiança
+7. **Modularização antes de crescimento**: Funções modulares facilitam testes e futuras integrações
+
+## 🤝 Como Contribuir / Estender o Projeto
+
+Se quiser expandir ou melhorar este projeto:
+
+1. **Para adicionar funcionalidades**:
+   - Crie funções seguindo padrão SRP (uma responsabilidade por função)
+   - Adicione novo `case` em `menu_inicial()` se for operação CRUD
+   - Reutilize validações existentes quando possível
+   - Teste manualmente antes de commitar
+
+2. **Para melhorar validações**:
+   - Modifique a função de validação correspondente
+   - Mantenha mensagens de erro descritivas
+   - Documente mudanças significativas no README
+
+3. **Para iterar sobre limitações**:
+   - Consulte a seção "Limitações e Pontos de Atenção"
+   - Consulte o "Roadmap" para priorização
+   - Siga o plano de versões sugerido
+
+4. **Para refatorar**:
+   - Mantenha testes do CRUD funcionais após mudanças
+   - Preserve nomes de funções públicas
+   - Adicione docstrings quando refatorar
+
+## 📚 Referências e Recursos
+
+### Python Docs
+- [Data Structures (Lists, Dicts)](https://docs.python.org/3/tutorial/datastructures.html)
+- [Control Flow (`match/case`)](https://docs.python.org/3/tutorial/controlflow.html#match-statements)
+- [Built-in `json` module](https://docs.python.org/3/library/json.html)
+- [Exception Handling](https://docs.python.org/3/tutorial/errors.html)
+
+### Princípios de Engenharia
+- SOLID Principles (SRP, OCP, LSP, ISP, DIP)
+- DRY (Don't Repeat Yourself)
+- KISS (Keep It Simple, Stupid)
+- Clean Code by Robert C. Martin
 
 ## 🎓 Conclusão
 
-O projeto é uma evolução de um exercício de sala de aula que foi escalado para um pequeno sistema de Gestão de Alunos. O foco foi aplicar boas práticas de engenharia de software desde o começo, mantendo o código claro e fácil de evoluir.
+O projeto é uma evolução de um exercício de sala de aula que foi escalado para um pequeno sistema de Gestão de Alunos. O foco foi aplicar **boas práticas de engenharia de software desde o começo**, mantendo o código:
+
+- ✅ **Claro**: fácil de ler e entender
+- ✅ **Fácil de evoluir**: modularizado, sem grandes dependências
+- ✅ **Testável**: funções isoladas e responsabilidades bem definidas
+- ✅ **Escalável**: estrutura permite crescimento sem refatorações maiores
+
+O sistema atual é funcional e atende aos objetivos educacionais, servindo como base sólida para futuras expansões e aprendizados mais avançados em programação.
 
 ---
 
-**Status**: 🔄 Em Desenvolvimento | **Versão**: 1.3.4 | **Última atualização**: 02/03/2026
+**Status**: 🔄 Em Desenvolvimento | **Versão**: 1.3.5 | **Última atualização**: 04/03/2026
