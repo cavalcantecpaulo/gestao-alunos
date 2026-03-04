@@ -220,9 +220,97 @@ Resumo do fluxo (apenas texto, versão limpa e legível):
 - **Reutilização de código**: funções auxiliares como `requisicao_aluno()` e `busca_aluno_rm()` reduzem duplicação
 - **Separação de responsabilidades**: entrada, processamento e exibição bem segregados
 - **Legibilidade**: estruturas simples e fáceis de acompanhar, sem complexidade desnecessária
-- **Escalabilidade**: organização permite futuras expansões sem refatorações maiores
+- **Escalabilidade**: organização permite crescimento sem refatorações maiores
+- **Validação preventiva**: erros capturados na entrada, antes de afetar estado (v1.3.7+)
+- **Loop iterativo com flags**: padrão consistente em validações para melhor controle (v1.3.6-v1.3.7)
 
-## ⚠️ Limitações e Pontos de Atenção (v1.3.5)
+### Padrões de Implementação Consolidados (v1.3.7+)
+
+#### Padrão de Validação com Loop e Flag
+```python
+# Exemplo: validacao_nome()
+nome_valido = False
+while nome_valido is False:
+    nome = input("\nDigite o nome do aluno: ")
+    condicao = ((nome == "") or (not nome.isalpha()))
+    if not condicao:
+        nome_valido = True
+        return nome.upper()
+    else:
+        exibicao_erro("Nome inválido!!! Digite apenas letras...")
+```
+
+#### Padrão de Try/Except em Conversão de Tipo
+```python
+# Exemplo: input_rm()
+nome_valido = False
+while nome_valido is False:
+    try:
+        rm = int(input(f"\nDigite o RM do aluno: "))
+        if rm > 0 and len(str(rm)) < 7:
+            return rm
+        else:
+            exibicao_erro("RM inválido!!!")
+    except ValueError:
+        exibicao_erro("\nDigite um valor inteiro no RM!!!")
+```
+
+#### Padrão de Validação de Mensalidade (v1.3.7)
+```python
+# Tratamento robusto com try/except + validação de valor
+try:
+    mensalidade = float(input(f"\nDigite o valor da mensalidade: "))
+    condicao = mensalidade < 0
+    while condicao:
+        exibicao_erro("Valor de mensalidade inválido!!!")
+        mensalidade = float(input(f"\nDigite novamente: "))
+        if not condicao:
+            return mensalidade
+    return mensalidade
+except ValueError:
+    exibicao_erro("Digite um valor numérico válido!!!")
+```
+
+#### Padrão de Persistência com Tratamento de Erro
+```python
+# Exemplo: salvando_lista_json()
+def salvando_lista_json():
+    try:
+        with open("dados_alunos.json", "w") as dados_alunos:
+            json.dump(lista_alunos, dados_alunos)
+        print("\nSalvando lista de alunos em arquivo json...")
+    except Exception:
+        exibicao_erro(f"Erro ao salvar arquivo json!!!")
+```
+
+#### Padrão de Busca com None Check
+```python
+# Exemplo: busca_aluno_rm()
+def busca_aluno_rm(rm):
+    for aluno in lista_alunos:
+        if aluno["rm"] == rm:
+            return aluno
+    return None
+
+# Uso padrão em operações CRUD
+aluno_encontrado = busca_aluno_rm(rm_digitado)
+if aluno_encontrado is not None:
+    # processar aluno
+else:
+    exibicao_erro("\nRM não encontrado!!!!")
+```
+
+### Convenções de Nomenclatura Consolidadas (v1.3.7+)
+- **Funções de validação**: prefixo `validacao_` (ex: `validacao_nome()`, `validacao_rm()`)
+- **Funções auxiliares de input**: prefixo `input_` (ex: `input_rm()` — input específico para RM)
+- **Funções de busca**: prefixo `busca_` (ex: `busca_aluno_rm()`)
+- **Funções de exibição**: prefixo `exibir_` ou `exibicao_` (ex: `exibir_aluno()`, `exibicao_erro()`)
+- **Funções de persistência**: prefixo `salvando_` ou `carregando_` (ex: `salvando_lista_json()`)
+- **Variáveis de controle**: sufixo `_valido` ou `_encontrado` (ex: `nome_valido`, `aluno_encontrado`)
+- **Dicionários de dados**: nomes no singular (ex: `aluno`) para representar estrutura individual
+- **Listas de dados**: nomes no plural (ex: `lista_alunos`) para representar coleção
+
+
 
 ### Limitações Conhecidas
 
@@ -235,42 +323,51 @@ Resumo do fluxo (apenas texto, versão limpa e legível):
    - Risco de perda de dados se processo for interrompido
    - **Solução futura**: Criar backup com timestamp antes de sobrescrever
 
-3. **Inconsistência de tipos em RM**: `input_rm()` retorna `int`, mas algumas comparações usam string
-   - Possível bug comparativo se tipos não forem consistentes
-   - **Solução futura**: Padronizar RM sempre como string ou sempre int
-
-4. **Busca linear**: `busca_aluno_rm()` usa O(n) complexity
+3. **Busca linear**: `busca_aluno_rm()` usa O(n) complexity
    - Aceitável para <1000 alunos
    - Inadequado em produção com muitos registros
    - **Solução futura**: Usar banco de dados com índices
 
-5. **Validação de mensalidade**: lógica pode ser melhorada
-   - Sem tratamento de `ValueError` em conversão `float()`
-   - **Solução planejada**: Versão 1.3.5
+4. **Sem confirmação em exclusão**: `excluir_aluno()` remove sem confirmação do usuário
+   - Risco de exclusão acidental
+   - **Solução futura**: Adicionar prompt de confirmação
 
-6. **Sem try/except em persistência**: `salvando_lista_json()` sem tratamento de exceção
-   - Pode crashar se disco sem espaço ou arquivo travado
-   - **Solução futura**: Envolver em try/except com mensagem clara
+5. **Sem type hints**: Assinaturas de função sem anotações de tipo
+   - Dificulta compreensão de tipos esperados
+   - **Solução futura**: Adicionar type hints em v1.4.0
 
-### Tratamento de Exceções Atual
+### Tratamento de Exceções Atual (v1.3.7)
 
 | Função | ValueError | FileError | Status |
 |--------|-----------|-----------|--------|
 | `menu_inicial()` | ✅ Capturado | ❌ Não | Bom |
 | `input_rm()` | ✅ Capturado | ❌ Não | Bom |
-| `validacao_mensalidade()` | ❌ Não | ❌ Não | ⚠️ Risco |
-| `salvando_lista_json()` | ❌ Não | ❌ Não | ⚠️ Risco |
+| `validacao_mensalidade()` | ✅ Capturado | ❌ Não | ✅ Robusto (v1.3.7) |
+| `salvando_lista_json()` | ✅ Capturado | ✅ Capturado | ✅ Robusto |
 
-### Regras e Convenções de Implementação (v1.3.5+)
+### Regras e Convenções de Implementação (v1.3.7+)
 - **RM único**: `validacao_rm()` impede duplicação; `busca_aluno_rm()` opera de forma rápida e segura
 - **Campos obrigatórios**: `nome_aluno`, `rm`, `curso`, `mensalidade` — validação evita vazios e tipos inválidos
 - **Normalização de dados**:
   - Campo `nome_aluno` armazenado em MAIÚSCULAS (padronização visual)
   - Campo `curso` em MAIÚSCULAS (facilita buscas e comparações futuras)
   - RM mantém tipo numérico internamente para validações de intervalo
-- **Tratamento robusto de exceções**: `ValueError` capturado em `input_rm()` evita crashes
-- **Persistência JSON**: `salvando_lista_json()` serializa `lista_alunos` sem validação de sobrescrita (ponto de melhoria)
-- **UX/UI consistente**: prefixos de erro padronizados, confirmações claras em operações bem-sucedidas
+  - Mensalidade sempre como `float` para operações monetárias precisas
+- **Tratamento robusto de exceções**: 
+  - `ValueError` capturado em `input_rm()`, `validacao_mensalidade()` evita crashes (v1.3.6-v1.3.7)
+  - Try/except em `salvando_lista_json()` para erros de I/O (v1.3.6+)
+  - Exceções genéricas com mensagem clara ao usuário
+- **Persistência JSON**: 
+  - `salvando_lista_json()` serializa `lista_alunos` com tratamento de erro
+  - Arquivo `dados_alunos.json` criado automaticamente ou sobrescrito (sem backup em v1.3.7)
+  - Ponto de melhoria: adicionar backup com timestamp em v1.4.0
+- **UX/UI consistente**: 
+  - Prefixos de erro padronizados via `exibicao_erro()`
+  - Confirmações claras em operações bem-sucedidas
+  - Mensagens descritivas orientam usuário em caso de erro
+- **Docstrings em todas as funções** (v1.3.6+):
+  - Padrão consolidado com descrição, parâmetros e retorno
+  - Facilita manutenção e compreensão do código
 
 ## 📌 Exemplo de Uso Completo
 
@@ -337,26 +434,44 @@ Encerrando programa...
 ]
 ```
 
-## ⚠️ Limitações e Pontos de Atenção (v1.3.4)
 
 ## 🚧 Em Desenvolvimento
 
 Funcionalidades e melhorias continuam em desenvolvimento. Algumas melhorias recentes estão listadas abaixo.
 
-### ✅ Implementações Recentes (v1.3.5)
-- **Refatoração de validação de mensalidade**
-  - Lógica corrigida: captura do valor antes da verificação de condição
-  - Tratamento robusto de exceções (ValueError) para entradas inválidas
-  - Mensagens de erro descritivas e contextualizadas para melhor UX
-  - Validação iterativa com flag booleano para clareza
+### ✅ Implementações Mais Recentes (v1.3.7)
+
+- **Tratamento de ValueError em `validacao_mensalidade()`** ✅ Implementado
+  - Conversão `float()` agora envolvida em try/except
+  - Loop iterativo com mensagem de erro descritiva
+  - Validação de valor negativo como fallback secundário
+  - Evita crash completo ao digitar letras ou símbolos
+  - Padrão consolidado para futuras validações numéricas
+
+### ✅ Implementações Recentes (v1.3.6)
+- **Docstrings completas em todas as funções**
+  - Padrão de documentação consolidado e consistente
+  - Documentação de parâmetros e retorno bem definida
+  - Facilita manutenção futura e entendimento do código
+
+- **Try/except robusto em persistência JSON**
+  - `salvando_lista_json()` agora trata exceções de arquivo e I/O
+  - Captura erros de escrita em disco e exibe mensagem amigável ao usuário
+  - Evita crashes e perda de dados em caso de problemas de sistema de arquivos
+
+- **Correção de fluxo em validação de mensalidade**
+  - Lógica refatorada para capturar valor **antes** da verificação de condição
+  - Tratamento robusto de `ValueError` para entradas não numéricas
+  - Loop iterativo com flag booleano para melhor controle
+  - Evita crash ao usuário digitar valores inválidos (ex: letras, símbolos)
 
 - **Melhoria de input e validação de RM**
-  - Mudança de tipo: RM agora retorna `str` (não `int`) para consistência com outras partes do código
-  - Validação aprimorada: `isdigit()` + range de valores (1 a 999999) + comprimento máximo de 6 dígitos
-  - Tratamento de exceções expandido para cobrir todos os cenários
-  - Variável de controle renomeada (`rm_valido` em vez de `nome_valido`) para maior clareza semântica
+  - RM agora retorna `str` (não `int`) para consistência com código
+  - Validação aprimorada: `isdigit()` + range (1 a 999999) + máximo 6 dígitos
+  - Tratamento de `ValueError` abrangente em `input_rm()`
+  - Variável de controle renomeada para clareza semântica
 
-### ✅ Implementações Anteriores (v1.3.4)
+### ✅ Implementações Anteriores (v1.3.5)
 - **Modularização completa das validações de entrada**
   - Manutenção das 4 validações independentes: `validacao_nome()`, `validacao_rm()`, `validacao_curso()`, `validacao_mensalidade()` (reutilizáveis).
 - **Inclusão da função interna `busca_aluno_rm(rm)`**
@@ -368,29 +483,53 @@ Funcionalidades e melhorias continuam em desenvolvimento. Algumas melhorias rece
 
 ## � Histórico de Versões & Roadmap
 
-### ✅ Versão Atual (v1.3.5)
-**Status**: 🟢 Funcional e estável, evoluído de v1.3.4 com melhorias implementadas
+### ✅ Versão Atual (v1.3.7)
+**Status**: 🟢 Funcional e estável
 
 **Funcionalidades implementadas**:
 - ✅ CRUD completo (Create, Read, Update, Delete)
 - ✅ Menu interativo com `match/case`
-- ✅ Validação modularizada em 4 funções
-- ✅ Persistência em JSON
+- ✅ Validação modularizada em 4 funções dedicadas
+- ✅ Persistência robusta em JSON com try/except
 - ✅ Busca por RM único
 - ✅ Tratamento centralizado de erros
+- ✅ Docstrings completas em todas as funções
+- ✅ Validação de mensalidade corrigida e melhorada
+- ✅ Tratamento de ValueError em `validacao_mensalidade()`
 
 ### 🔄 Roadmap de Melhorias
 
-#### 🎯 Curto Prazo (v1.3.5 - v1.4.0) — Consolidação
-**Foco**: Corrigir bugs, melhorar robustez, QoL
+#### ✅ Última Release (v1.3.7) — Robustez e Validação Completa
+**Status**: 🟢 Concluída
 
-- [ ] Corrigir `validacao_mensalidade()` — tratar `ValueError` em conversão float
-- [ ] Adicionar try/except em `salvando_lista_json()` — tratar erros de arquivo
+- [x] Docstrings em todas as funções — ✅ Implementado em v1.3.6
+- [x] Try/except em `salvando_lista_json()` — ✅ Implementado em v1.3.6
+- [x] **Corrigir `validacao_mensalidade()` — tratar `ValueError` em conversão float** ✅ Implementado em v1.3.7
+  - ✅ Conversão `float()` envolvida em try/except
+  - ✅ Loop iterativo com mensagem de erro descritiva
+  - ✅ Validação de valor negativo como fallback secundário
+- [ ] Confirmação antes de excluir aluno (segurança UX) — próxima release
+- [ ] Melhorar formatação de saída (tabelas, índices) — próxima release
+- [ ] Padronizar nomes de variáveis de controle — próxima release
+
+#### 🎯 Próximo Release (v1.3.8) — Confirmação de Exclusão e UX
+**Foco**: Melhorar segurança da exclusão e formatação de saída
+
+- [ ] **Confirmação antes de excluir aluno** (double-check para segurança)
+- [ ] Melhorar formatação de saída (tabelas ASCII, índices visuais)
+- [ ] Padronizar nomes de variáveis de controle (`validacao_*` vs `nome_valido`)
+- [ ] Revisar nomenclatura interna para clareza semântica
+
+#### 🎯 Curto Prazo (v1.4.0) — Consolidação
+**Foco**: Estabilidade, funcionalidade 100%, melhorias QoL
+
 - [ ] Implementar `leitura_inicial_json()` com fallback automático
-- [ ] Confirmação antes de excluir aluno (segurança)
-- [ ] Melhorar formatação de saída (tabelas, índices)
-- [ ] Adicionar docstrings em todas as funções
-- [ ] Padronizar nomes de variáveis de controle
+  - Carregamento de dados ao inicializar aplicação
+  - Try/except com graceful fallback para lista vazia
+- [ ] Sistema de backup automático antes de sobrescrever JSON
+- [ ] Type hints em assinaturas de funções
+- [ ] Linting com flake8 — verificação de style
+- [ ] Testes unitários iniciais com pytest (cobertura mínima 60%)
 
 #### 📋 Médio Prazo (v1.5.0 - v2.0.0) — Modularização
 
@@ -523,4 +662,4 @@ O sistema atual é funcional e atende aos objetivos educacionais, servindo como 
 
 ---
 
-**Status**: 🔄 Em Desenvolvimento | **Versão**: 1.3.5 | **Última atualização**: 04/03/2026
+**Status**: 🟢 Funcional e Estável/Em Desenvolvimento | **Versão**: 1.3.7 | **Última atualização**: 04/03/2026
