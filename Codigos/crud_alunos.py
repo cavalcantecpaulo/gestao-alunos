@@ -93,11 +93,15 @@ def excluir_aluno():
     rm_digitado = requisicao_aluno("excluir")
     aluno_encontrado = busca_aluno_rm(rm_digitado)
     if aluno_encontrado is not None:
-        print()
-        lista_alunos.remove(aluno_encontrado)
-        print("\nAluno excluído com sucesso!")
+        print(f"\nAluno encontrado: {aluno_encontrado["nome_aluno"]} | RM{aluno_encontrado["rm"]}")
+        exclusao = -1
+        while exclusao !=1 and exclusao != 0:
+            exclusao = int(input("\nDeseja excluir o aluno encontrado? (Digite 1 - Sim, ou 0 - Não): "))
+            if exclusao == 1:
+                lista_alunos.remove(aluno_encontrado)
+                print("\nAluno excluído com sucesso!")
     else:
-        exibicao_erro("\nRM não encontrado!!!!")
+        exibicao_erro("RM não encontrado!!!!")
 
 def exibir_aluno():
     """Exibição de aluno específico, pelo RM."""
@@ -106,7 +110,7 @@ def exibir_aluno():
     if aluno_encontrado is not None:
         informacoes_aluno(aluno_encontrado)
     else:
-        exibicao_erro("\nRM não encontrado!!!!")
+        exibicao_erro("RM não encontrado!!!!")
 
 def exibir_alunos():
     """Exibição de todos os alunos cadastrados na lista."""
@@ -146,7 +150,7 @@ def exibicao_erro(erro):
 
     Parâmetro: erro - mensagem de erro, para ser exibida ao usuário.
 
-    Retorna: Mensagem de erro, que conta com um print com o erro de cada método que aprersentar algum tipo de erro.
+    Retorna: Mensagem de erro, que conta com um print com o erro de cada metodo que apresentar algum tipo de erro.
     """
     print(f"\nErro: {erro}")
 
@@ -155,7 +159,7 @@ def busca_aluno_rm(rm):
 
     Parâmetro: RM do aluno, para ser usado na busca.
 
-    Retorna: Em caso de sucesso, o aluno com o RM utilizado.
+    Retorna: Em caso de sucesso, o objeto aluno com o RM do parâmetro.
     """
     for aluno in lista_alunos:
         if aluno["rm"] == rm:
@@ -230,7 +234,7 @@ def input_rm():
     while nome_valido is False:
         try:
             rm = int(input(f"\nDigite o RM do aluno: "))
-            if rm>0 and  len(str(rm)) < 7:
+            if rm>0 and len(str(rm)) < 7:
                 nome_valido = True
                 return rm
             else:
