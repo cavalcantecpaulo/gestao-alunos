@@ -94,7 +94,7 @@ O código foi organizado com separação clara de responsabilidades. Cada funç�
 ```python
 aluno = {
     "nome_aluno": str,      # Nome do aluno
-    "rm": str,              # Registro de Matrícula (identificador único)
+    "rm": int,              # Registro de Matrícula (identificador único)
     "curso": str,           # Curso do aluno
     "mensalidade": float    # Valor da mensalidade em reais
 }
@@ -683,4 +683,4 @@ O sistema atual é funcional e atende aos objetivos educacionais, servindo como 
 
 ---
 
-**Status**: 🟢 Funcional e Estável/Em Desenvolvimento | **Versão**: 1.4.1 | **Última atualização**: 05/03/2026
+**Status**: 🟢 Funcional e Estável/Em Desenvolvimento | **Versão**: 1.4.2 | **Última atualização**: 05/03/2026

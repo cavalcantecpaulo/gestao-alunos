@@ -4,7 +4,7 @@ lista_alunos = []
 #Permite que o menu inicial seja executado
 opcao = -1
 
-def menu_inicial(opcao):
+def menu_inicial(opcao) -> None:
     """Menu executado quando se roda o projeto.
     Parâmetro: opção, que vêm -1, para início do loop, e depois passa para um input(Selecione opção), que aparece no Menu, para prosseguir.
     """
@@ -40,14 +40,14 @@ def menu_inicial(opcao):
         except ValueError:
             exibicao_erro("Valor inválido, digite um número entre as opções do menu!!!")
 
-def informacoes_aluno(aluno):
+def informacoes_aluno(aluno) -> None:
     """Lista dados de aluno, com um padrão de formatação.
     Parâmetro: aluno - dicionário com os dados do aluno, para exibição organizada.
     """
     print(f"\n    RM{aluno["rm"]} | {aluno["nome_aluno"]}")
     print(f"    Curso: {aluno["curso"]} | Mensalidade: R${aluno["mensalidade"]:.2f}")
 
-def adicionar_aluno():
+def adicionar_aluno() -> None:
     """Une todos os inputs, e cria um aluno, para depois adicionar na lista de alunos."""
     nome = validacao_nome()
     rm = validacao_rm()
@@ -63,7 +63,7 @@ def adicionar_aluno():
     lista_alunos.append(aluno)
     print("\nAluno adicionado com sucesso!")
 
-def atualizar_aluno():
+def atualizar_aluno() -> None:
     """Atualização de dados de aluno."""
     rm_digitado = requisicao_aluno("atualizar")
     aluno_encontrado = busca_aluno_rm(rm_digitado)
@@ -82,7 +82,7 @@ def atualizar_aluno():
     else:
         exibicao_erro("\nRM não encontrado!!!!")
 
-def excluir_aluno():
+def excluir_aluno() -> None:
     """Exclusão de aluno da lista."""
     rm_digitado = requisicao_aluno("excluir")
     aluno_encontrado = busca_aluno_rm(rm_digitado)
@@ -94,10 +94,12 @@ def excluir_aluno():
             if exclusao == 1:
                 lista_alunos.remove(aluno_encontrado)
                 print("\nAluno excluído com sucesso!")
+            else:
+                print("\nAluno foi mantido na lista de alunos!!!")
     else:
         exibicao_erro("RM não encontrado!!!!")
 
-def exibir_aluno():
+def exibir_aluno() -> None:
     """Exibição de aluno específico, pelo RM."""
     rm_digitado = requisicao_aluno("exibir")
     aluno_encontrado = busca_aluno_rm(rm_digitado)
@@ -106,7 +108,7 @@ def exibir_aluno():
     else:
         exibicao_erro("RM não encontrado!!!!")
 
-def exibir_alunos():
+def exibir_alunos() -> None:
     """Exibição de todos os alunos cadastrados na lista."""
     if len(lista_alunos) == 0:
         print("\nNenhum aluno encontrado!!!!")
@@ -115,17 +117,21 @@ def exibir_alunos():
         for aluno in lista_alunos:
             informacoes_aluno(aluno)
 
-def requisicao_aluno(acao):
+def requisicao_aluno(acao: str) -> int:
     """ Função padrão, usada nos inputs, que reduz código, pois é usada em diversos locais diferentes.
 
     Parâmetro: ação que o usuário irá realizar - (atualizar), (exibir), (excluir) - para exibir a mensagem correta ao usuário.
 
     Retorna: RM digitado, para ser usado na busca posteriormente. Corrigido erro que capturava string e não int
     """
-    rm = int(input(f"Digite o RM do aluno que deseja {acao}: "))
-    return rm
+    while True:
+        try:
+            rm = int(input(f"Digite o RM do aluno que deseja {acao}: "))
+            return rm
+        except ValueError:
+            exibicao_erro("Digite um valor inteiro no RM!!!")
 
-def salvando_lista_json():
+def salvando_lista_json() -> None:
     """Salva lista de alunos em um arquivo Json. Utiliza o import json, bem no início do código"""
     try:
         with open("dados_alunos.json", "w") as dados_alunos:
@@ -134,12 +140,12 @@ def salvando_lista_json():
     except Exception:
         exibicao_erro(f"Erro ao salvar arquivo json {Exception}!!!")
 
-def exibir_titulo_inicial():
+def exibir_titulo_inicial() -> None:
     """Exibição do título do projeto, para dar uma melhor experiência ao usuário, e deixar o projeto mais organizado."""
     print("\n-----  CRUD Gestão de Alunos Python  -----")
     print("--- Seja bem-vindo ao Mini-Crud em Python ---")
 
-def exibicao_erro(erro):
+def exibicao_erro(erro: str) -> None:
     """Exibição de mensagens de erro, para reduzir código repetido, e exibir mensagens de erro padronizadas.
 
     Parâmetro: erro - mensagem de erro, para ser exibida ao usuário.
@@ -148,7 +154,7 @@ def exibicao_erro(erro):
     """
     print(f"\nErro: {erro}")
 
-def busca_aluno_rm(rm):
+def busca_aluno_rm(rm: int) -> dict | None:
     """Busca aluno específico pelo RM, usado como parâmetro da função.
 
     Parâmetro: RM do aluno, para ser usado na busca.
@@ -161,21 +167,21 @@ def busca_aluno_rm(rm):
     else:
         return None
 
-def validacao_nome():
+def validacao_nome() -> str:
     """Validação do nome do aluno, que deve ser preenchido, e não pode conter números ou caracteres especiais.
 
     Retorna: Em caso de sucesso, retorna o nome do aluno em letras maiúsculas.
     """
     nome_valido = False
     while nome_valido is False:
-        nome = input("\nDigite o nome do novo aluno: ")
+        nome = input("\nDigite o nome do aluno: ")
         condicao = nome == ""
         if not condicao:
             return nome.upper()
         else:
             exibicao_erro("Nome inválido!!! Digite apenas letras e não deixe o campo vazio!!!")
 
-def validacao_rm():
+def validacao_rm() -> int:
     """Validação do RM do aluno, que deve ser um número inteiro,
      positivo, com no máximo 6 dígitos, e não pode ser repetido.
 
@@ -191,7 +197,7 @@ def validacao_rm():
             return rm_digitado
     return rm_digitado
 
-def validacao_curso():
+def validacao_curso() -> str:
     """Validação do curso que o aluno faz parte, que deve ser preenchido, e não pode ser vazio.
 
     Retorna: Em caso de sucesso, o nome do curso, em letras maiúsculas.
@@ -205,7 +211,7 @@ def validacao_curso():
         else:
             exibicao_erro("Curso inválido!!! Digite novamente!!!")
 
-def validacao_mensalidade():
+def validacao_mensalidade() -> float:
     """Validação do valor da mensalidade, que deve ser um número positivo, e não pode ser negativo.
 
     Retorna: Em caso de sucesso, o valor da mensalidade.
@@ -219,7 +225,7 @@ def validacao_mensalidade():
                 return mensalidade
     return mensalidade
 
-def input_rm():
+def input_rm() -> int:
     """Input específico para o RM, que reduz código repetido, e serve para validar o tipo do input,
     que deve ser inteiro, e não pode ser negativo ou ter mais de 6 dígitos.
 
