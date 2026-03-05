@@ -30,6 +30,7 @@ O sistema de Gestão de Alunos oferece as seguintes operações:
 
 ### 3️⃣ **Excluir Aluno**
 - Remove um aluno a partir do RM
+- **Confirmação de exclusão**: solicita confirmação do usuário antes de remover (1 - Sim, 0 - Não)
 - Mensagens claras quando o aluno não é encontrado
 
 ### 4️⃣ **Exibir Aluno**
@@ -328,19 +329,15 @@ else:
    - Inadequado em produção com muitos registros
    - **Solução futura**: Usar banco de dados com índices
 
-4. **Sem confirmação em exclusão**: `excluir_aluno()` remove sem confirmação do usuário
-   - Risco de exclusão acidental
-   - **Solução futura**: Adicionar prompt de confirmação
-
-5. **Sem type hints**: Assinaturas de função sem anotações de tipo
+4. **Sem type hints**: Assinaturas de função sem anotações de tipo
    - Dificulta compreensão de tipos esperados
-   - **Solução futura**: Adicionar type hints em v1.4.0
+   - **Solução futura**: Adicionar type hints em v1.5.0
 
-### Tratamento de Exceções Atual (v1.3.7)
+### Tratamento de Exceções Atual (v1.4.1)
 
 | Função | ValueError | FileError | Status |
 |--------|-----------|-----------|--------|
-| `menu_inicial()` | ✅ Capturado | ❌ Não | Bom |
+| `menu_inicial()` | ✅ Capturado (v1.4.1) | ❌ Não | ✅ Robusto |
 | `input_rm()` | ✅ Capturado | ❌ Não | Bom |
 | `validacao_mensalidade()` | ✅ Capturado | ❌ Não | ✅ Robusto (v1.3.7) |
 | `salvando_lista_json()` | ✅ Capturado | ✅ Capturado | ✅ Robusto |
@@ -439,7 +436,28 @@ Encerrando programa...
 
 Funcionalidades e melhorias continuam em desenvolvimento. Algumas melhorias recentes estão listadas abaixo.
 
-### ✅ Implementações Mais Recentes (v1.3.7)
+### ✅ Implementações Mais Recentes (v1.4.1)
+
+- **Confirmação antes de excluir aluno** ✅ Implementado
+  - Nova camada de segurança na função `excluir_aluno()`
+  - Solicita confirmação do usuário (1 - Sim, 0 - Não)
+  - Evita exclusões acidentais de registros
+  - Implementa o padrão de loop com validação para input de confirmação
+  - Mensagem clara de exclusão bem-sucedida ou cancelada
+
+- **Tratamento de ValueError no Menu Inicial** ✅ Implementado
+  - `menu_inicial()` agora captura `ValueError` para entrada inválida
+  - Evita crash quando usuário digita texto em vez de números
+  - Mensagem de erro descritiva: "Valor inválido, digite um número entre as opções do menu!!!"
+  - Melhora robustez geral da aplicação
+
+- **Refatoração de `validacao_nome()`** ✅ Implementado
+  - Validação simplificada: agora verifica apenas se o campo não está vazio
+  - Remove restrição de `isalpha()` que impedia nomes com espaços (ex: "Maria Silva")
+  - Mantém conversão para MAIÚSCULAS
+  - Melhora usabilidade permitindo nomes completos
+
+### ✅ Implementações Recentes (v1.3.7)
 
 - **Tratamento de ValueError em `validacao_mensalidade()`** ✅ Implementado
   - Conversão `float()` agora envolvida em try/except
@@ -481,9 +499,9 @@ Funcionalidades e melhorias continuam em desenvolvimento. Algumas melhorias rece
 - **Persistência/Arquivos**
   - `salvando_lista_json()` para exportar os dados; sugestão de carregamento inicial automático (próxima melhoria).
 
-## � Histórico de Versões & Roadmap
+## 🚧 Histórico de Versões & Roadmap
 
-### ✅ Versão Atual (v1.3.7)
+### ✅ Versão Atual (v1.4.1)
 **Status**: 🟢 Funcional e estável
 
 **Funcionalidades implementadas**:
@@ -496,31 +514,34 @@ Funcionalidades e melhorias continuam em desenvolvimento. Algumas melhorias rece
 - ✅ Docstrings completas em todas as funções
 - ✅ Validação de mensalidade corrigida e melhorada
 - ✅ Tratamento de ValueError em `validacao_mensalidade()`
+- ✅ **Confirmação antes de excluir aluno** (v1.4.1)
+- ✅ **Tratamento de ValueError no Menu Inicial** (v1.4.1)
+- ✅ **Refatoração de validacao_nome() para permitir nomes completos** (v1.4.1)
 
 ### 🔄 Roadmap de Melhorias
 
-#### ✅ Última Release (v1.3.7) — Robustez e Validação Completa
+#### ✅ Última Release (v1.4.1) — Segurança e Robustez
 **Status**: 🟢 Concluída
 
-- [x] Docstrings em todas as funções — ✅ Implementado em v1.3.6
-- [x] Try/except em `salvando_lista_json()` — ✅ Implementado em v1.3.6
-- [x] **Corrigir `validacao_mensalidade()` — tratar `ValueError` em conversão float** ✅ Implementado em v1.3.7
-  - ✅ Conversão `float()` envolvida em try/except
-  - ✅ Loop iterativo com mensagem de erro descritiva
-  - ✅ Validação de valor negativo como fallback secundário
-- [ ] Confirmação antes de excluir aluno (segurança UX) — próxima release
-- [ ] Melhorar formatação de saída (tabelas, índices) — próxima release
-- [ ] Padronizar nomes de variáveis de controle — próxima release
+- [x] Confirmação antes de excluir aluno — ✅ Implementado em v1.4.1
+  - ✅ Loop de validação com input 1/0
+  - ✅ Evita exclusões acidentais
+  - ✅ Feedback claro ao usuário
+- [x] Tratamento de ValueError no menu — ✅ Implementado em v1.4.1
+  - ✅ Try/except no menu_inicial()
+  - ✅ Mensagem de erro descritiva
+- [x] Refatoração de validacao_nome() — ✅ Implementado em v1.4.1
+  - ✅ Permite nomes com espaços
+  - ✅ Mantém conversão para MAIÚSCULAS
 
-#### 🎯 Próximo Release (v1.3.8) — Confirmação de Exclusão e UX
-**Foco**: Melhorar segurança da exclusão e formatação de saída
+#### 🎯 Próximo Release (v1.4.2) — Melhorias de UX
+**Foco**: Aprimorar experiência do usuário
 
-- [ ] **Confirmação antes de excluir aluno** (double-check para segurança)
 - [ ] Melhorar formatação de saída (tabelas ASCII, índices visuais)
-- [ ] Padronizar nomes de variáveis de controle (`validacao_*` vs `nome_valido`)
-- [ ] Revisar nomenclatura interna para clareza semântica
+- [ ] Adicionar mais validações (ex: CPF, formato de e-mail)
+- [ ] Sistema de logs de operações
 
-#### 🎯 Curto Prazo (v1.4.0) — Consolidação
+#### 🎯 Curto Prazo (v1.5.0) — Consolidação
 **Foco**: Estabilidade, funcionalidade 100%, melhorias QoL
 
 - [ ] Implementar `leitura_inicial_json()` com fallback automático
@@ -662,4 +683,4 @@ O sistema atual é funcional e atende aos objetivos educacionais, servindo como 
 
 ---
 
-**Status**: 🟢 Funcional e Estável/Em Desenvolvimento | **Versão**: 1.3.7 | **Última atualização**: 04/03/2026
+**Status**: 🟢 Funcional e Estável/Em Desenvolvimento | **Versão**: 1.4.1 | **Última atualização**: 05/03/2026

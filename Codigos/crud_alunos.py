@@ -44,7 +44,7 @@ def informacoes_aluno(aluno):
     """Lista dados de aluno, com um padrão de formatação.
     Parâmetro: aluno - dicionário com os dados do aluno, para exibição organizada.
     """
-    print(f"\n    Nome: {aluno["nome_aluno"]} | RM{aluno["rm"]}")
+    print(f"\n    RM{aluno["rm"]} | {aluno["nome_aluno"]}")
     print(f"    Curso: {aluno["curso"]} | Mensalidade: R${aluno["mensalidade"]:.2f}")
 
 def adicionar_aluno():
@@ -68,13 +68,10 @@ def atualizar_aluno():
     rm_digitado = requisicao_aluno("atualizar")
     aluno_encontrado = busca_aluno_rm(rm_digitado)
     if aluno_encontrado is not None:
-        print(f"\nNome: {aluno_encontrado["nome_aluno"]}")
+        informacoes_aluno(aluno_encontrado)
+        
         nome = validacao_nome()
-
-        print(f"Curso: {aluno_encontrado["curso"]}")
         curso = validacao_curso()
-
-        print(f"Mensalidade: R${aluno_encontrado["mensalidade"]}")
         mensalidade = validacao_mensalidade()
 
         aluno_encontrado["nome_aluno"] = nome
@@ -90,7 +87,7 @@ def excluir_aluno():
     rm_digitado = requisicao_aluno("excluir")
     aluno_encontrado = busca_aluno_rm(rm_digitado)
     if aluno_encontrado is not None:
-        print(f"\nAluno encontrado: {aluno_encontrado["nome_aluno"]} | RM{aluno_encontrado["rm"]}")
+        informacoes_aluno(aluno_encontrado)
         exclusao = -1
         while exclusao !=1 and exclusao != 0:
             exclusao = int(input("\nDeseja excluir o aluno encontrado? (Digite 1 - Sim, ou 0 - Não): "))
@@ -115,8 +112,8 @@ def exibir_alunos():
         print("\nNenhum aluno encontrado!!!!")
     else:
         print("\nExibindo alunos: ")
-    for aluno in lista_alunos:
-        informacoes_aluno(aluno)
+        for aluno in lista_alunos:
+            informacoes_aluno(aluno)
 
 def requisicao_aluno(acao):
     """ Função padrão, usada nos inputs, que reduz código, pois é usada em diversos locais diferentes.
@@ -139,7 +136,7 @@ def salvando_lista_json():
 
 def exibir_titulo_inicial():
     """Exibição do título do projeto, para dar uma melhor experiência ao usuário, e deixar o projeto mais organizado."""
-    print("\n--- CRUD Alunos Python ---")
+    print("\n-----  CRUD Gestão de Alunos Python  -----")
     print("--- Seja bem-vindo ao Mini-Crud em Python ---")
 
 def exibicao_erro(erro):
@@ -172,7 +169,7 @@ def validacao_nome():
     nome_valido = False
     while nome_valido is False:
         nome = input("\nDigite o nome do novo aluno: ")
-        condicao = ((nome == "") or (not nome.isalpha()))
+        condicao = nome == ""
         if not condicao:
             return nome.upper()
         else:
@@ -199,13 +196,14 @@ def validacao_curso():
 
     Retorna: Em caso de sucesso, o nome do curso, em letras maiúsculas.
     """
-    curso = input("\nDigite o novo curso do aluno: ")
-    condicao = (curso == "")
-    while condicao:
+    curso_valido = False
+    while curso_valido is False:
         curso = input("\nDigite o novo curso do aluno: ")
+        condicao = curso == ""
         if not condicao:
             return curso.upper()
-    return curso.upper()
+        else:
+            exibicao_erro("Curso inválido!!! Digite novamente!!!")
 
 def validacao_mensalidade():
     """Validação do valor da mensalidade, que deve ser um número positivo, e não pode ser negativo.
@@ -227,12 +225,12 @@ def input_rm():
 
     Retorna: Em caso de sucesso, o RM digitado.
     """
-    nome_valido = False
-    while nome_valido is False:
+    rm_valido = False
+    while rm_valido is False:
         try:
             rm = int(input(f"\nDigite o RM do aluno: "))
             if rm>0 and len(str(rm)) < 7:
-                nome_valido = True
+                rm_valido = True
                 return rm
             else:
                 exibicao_erro("RM inválido!!!")
