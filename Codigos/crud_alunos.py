@@ -1,12 +1,13 @@
 import json
 lista_alunos = []
+
+#Permite que o menu inicial seja executado
 opcao = -1
 
 def menu_inicial(opcao):
     """Menu executado quando se roda o projeto.
-    Parâmetro: opção - input (Selecione opção), que aparece no Menu.
+    Parâmetro: opção, que vêm -1, para início do loop, e depois passa para um input(Selecione opção), que aparece no Menu, para prosseguir.
     """
-
     while opcao != 0:
         exibir_titulo_inicial()
         print("   1 - Adicionar aluno")
@@ -40,16 +41,14 @@ def menu_inicial(opcao):
             exibicao_erro("Valor inválido, digite um número entre as opções do menu!!!")
 
 def informacoes_aluno(aluno):
-    """Lista dados de aluno.
+    """Lista dados de aluno, com um padrão de formatação.
     Parâmetro: aluno - dicionário com os dados do aluno, para exibição organizada.
     """
-
     print(f"\n    Nome: {aluno["nome_aluno"]} | RM{aluno["rm"]}")
     print(f"    Curso: {aluno["curso"]} | Mensalidade: R${aluno["mensalidade"]:.2f}")
 
 def adicionar_aluno():
     """Une todos os inputs, e cria um aluno, para depois adicionar na lista de alunos."""
-
     nome = validacao_nome()
     rm = validacao_rm()
     curso = validacao_curso()
@@ -66,7 +65,6 @@ def adicionar_aluno():
 
 def atualizar_aluno():
     """Atualização de dados de aluno."""
-
     rm_digitado = requisicao_aluno("atualizar")
     aluno_encontrado = busca_aluno_rm(rm_digitado)
     if aluno_encontrado is not None:
@@ -89,7 +87,6 @@ def atualizar_aluno():
 
 def excluir_aluno():
     """Exclusão de aluno da lista."""
-
     rm_digitado = requisicao_aluno("excluir")
     aluno_encontrado = busca_aluno_rm(rm_digitado)
     if aluno_encontrado is not None:
@@ -132,7 +129,7 @@ def requisicao_aluno(acao):
     return rm
 
 def salvando_lista_json():
-    """Salvar lista de alunos em um arquivo Json."""
+    """Salva lista de alunos em um arquivo Json. Utiliza o import json, bem no início do código"""
     try:
         with open("dados_alunos.json", "w") as dados_alunos:
             json.dump(lista_alunos, dados_alunos)
@@ -150,7 +147,7 @@ def exibicao_erro(erro):
 
     Parâmetro: erro - mensagem de erro, para ser exibida ao usuário.
 
-    Retorna: Mensagem de erro, que conta com um print com o erro de cada metodo que apresentar algum tipo de erro.
+    Exibe: Mensagem de erro, que conta com um print com o erro de cada metodo que apresentar algum tipo de erro.
     """
     print(f"\nErro: {erro}")
 
@@ -170,7 +167,7 @@ def busca_aluno_rm(rm):
 def validacao_nome():
     """Validação do nome do aluno, que deve ser preenchido, e não pode conter números ou caracteres especiais.
 
-    Retorna: Em caso de sucesso, o nome do aluno em letras maiúsculas.
+    Retorna: Em caso de sucesso, retorna o nome do aluno em letras maiúsculas.
     """
     nome_valido = False
     while nome_valido is False:
@@ -242,11 +239,17 @@ def input_rm():
         except ValueError:
             exibicao_erro("\nDigite um valor inteiro no RM!!!")
 
+# def iniciar_lista_alunos:
+#     lista_alunos = []
+#     if leitura_json not null:
+#       lista_alunos.append(leitura_inicial_json() not null)
+#    else:
+#      return None
 
 # def leitura_inicial_json():
-#     arquivo_json = open("../dados_alunos.json", "r")
-#     dados_alunos = json.load(arquivo_json)
-#     return dados_alunos
-#
-# lista_alunos.append(leitura_inicial_json())
+#     if(dados_pre_carregados !=null):
+#         arquivo_json = open("../dados_alunos.json", "r")
+#          dados_alunos = json.load(arquivo_json)
+#          return dados_alunos
+
 menu_inicial(opcao)
