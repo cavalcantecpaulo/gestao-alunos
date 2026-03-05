@@ -126,9 +126,9 @@ def requisicao_aluno(acao):
 
     Parâmetro: ação que o usuário irá realizar - (atualizar), (exibir), (excluir) - para exibir a mensagem correta ao usuário.
 
-    Retorna: RM digitado, para ser usado na busca posteriormente.
+    Retorna: RM digitado, para ser usado na busca posteriormente. Corrigido erro que capturava string e não int
     """
-    rm = input(f"Digite o RM do aluno que deseja {acao}: ")
+    rm = int(input(f"Digite o RM do aluno que deseja {acao}: "))
     return rm
 
 def salvando_lista_json():
