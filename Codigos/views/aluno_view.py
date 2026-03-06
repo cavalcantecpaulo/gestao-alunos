@@ -93,7 +93,6 @@ def validacao_mensalidade() -> float:
     while condicao:
         exibicao_erro("Valor de mensalidade inválido!!!")
         mensalidade = float(input(f"\nDigite o valor da mensalidade do aluno: "))
-        condicao = mensalidade<0
         if not condicao:
                 return mensalidade
     return mensalidade

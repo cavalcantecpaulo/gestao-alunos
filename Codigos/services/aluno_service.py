@@ -63,6 +63,8 @@ def validar_rm(rm: int) -> bool:
     """
     if not isinstance(rm,int):
         return False
+    if len(str(rm))>6 or len(str(rm)) <1:
+        return False
     return True
 
 def validar_curso(curso: str) -> bool:

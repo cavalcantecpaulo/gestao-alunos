@@ -18,10 +18,10 @@ Regras de imports:
   - Importa Repository (para persistir)
   - NAO importa Model diretamente (Service faz isso)
 """
-from Codigos.repositories.aluno_repository import lista_alunos
+from Codigos.repositories.aluno_repository import lista_alunos, busca_aluno_rm
 from Codigos.services.aluno_service import validar_nome, validar_mensalidade, validar_curso, validar_rm, \
     criar_objeto_aluno
-from Codigos.views.aluno_view import input_aluno
+from Codigos.views.aluno_view import input_aluno, input_rm
 
 
 def escolha_usuario():
@@ -44,8 +44,6 @@ def escolha_usuario():
         case 0: print("\nEncerrando programa...")
         case _: exibicao_erro("Opção inválida!!!")
     return opcao
-        #except ValueError:
-            #exibicao_erro("Valor inválido, digite um número entre as opções do menu!!!")
 
 def adicionar_aluno():
     """
@@ -80,3 +78,59 @@ def adicionar_aluno():
         lista_alunos.append(aluno)
     except ValueError:
         print("Valor inválido, digite corretamente!!!")
+
+
+def atualizar_aluno() -> None:
+    """Atualização de dados de aluno."""
+    rm = input_rm()
+    aluno_encontrado = busca_aluno_rm(rm)
+    if aluno_encontrado is not None:
+        aluno_encontrado.informacoes_aluno()
+
+        nome = validar_nome()
+        curso = validar_curso()
+        mensalidade = validar_mensalidade()
+
+        aluno_encontrado["nome_aluno"] = nome
+        aluno_encontrado["curso"] = curso
+        aluno_encontrado["mensalidade"] = mensalidade
+
+        print("\nInformações de aluno atualizada com sucesso!")
+    else:
+        exibicao_erro("\nRM não encontrado!!!!")
+        return
+
+def excluir_aluno() -> None:
+    """Exclusão de aluno da lista."""
+    rm_digitado = requisicao_aluno("excluir")
+    aluno_encontrado = busca_aluno_rm(rm_digitado)
+    if aluno_encontrado is not None:
+        aluno_encontrado.informacoes_aluno()
+        exclusao = -1
+        while exclusao !=1 and exclusao != 0:
+            exclusao = int(input("\nDeseja excluir o aluno encontrado? (Digite 1 - Sim, ou 0 - Não): "))
+            if exclusao == 1:
+                lista_alunos.remove(aluno_encontrado)
+                print("\nAluno excluído com sucesso!")
+            else:
+                print("\nAluno foi mantido na lista de alunos!!!")
+    else:
+        exibicao_erro("RM não encontrado!!!!")
+
+def exibir_aluno() -> None:
+    """Exibição de aluno específico, pelo RM."""
+    rm_digitado = requisicao_aluno("exibir")
+    aluno_encontrado = busca_aluno_rm(rm_digitado)
+    if aluno_encontrado is not None:
+        aluno_encontrado.informacoes_aluno()
+    else:
+        exibicao_erro("RM não encontrado!!!!")
+
+def exibir_alunos() -> None:
+    """Exibição de todos os alunos cadastrados na lista."""
+    if len(lista_alunos) == 0:
+        print("\nNenhum aluno encontrado!!!!")
+    else:
+        print("\nExibindo alunos: ")
+        for aluno in lista_alunos:
+            aluno.informacoes_aluno()
