@@ -17,10 +17,17 @@ Objetivos alcancados ate v1.4.3:
 - Implementar entidade Aluno com dataclass
 - Isolar persistencia em repository
 - Iniciar controller para orquestrar fluxo
+- Estruturar projeto com separacao de responsabilidades (camadas)
+- Criar validadores puros em service (sem input/print, testaveis)
+- Quebrar dependencias circulares entre modulos
+- Implementar entidade Aluno com dataclass
+- Isolar persistencia em repository
+- Iniciar controller para orquestrar fluxo
 
 ## Estado Atual (v1.4.3)
 
 - **Versao atual do codigo:** `v1.4.3`
+- **Status:** Refatoracao em camadas (ETAPA 1 - 70% completa)
 - **Status:** Refatoracao em camadas (ETAPA 1 - 70% completa)
 - **Arquivo principal:** `Codigos/main.py` (entrypoint unico)
 - **Proxima meta:** Completar menu_controller e eliminar circular imports
@@ -28,6 +35,7 @@ Objetivos alcancados ate v1.4.3:
 ## Arquitetura Implementada (v1.4.3)
 
 ### Estrutura de Camadas
+Projeto reorganizado para separar responsabilidades:
 Projeto reorganizado para separar responsabilidades:
 
 ```
@@ -38,11 +46,13 @@ Codigos/
 ├── views/
 │   ├── menu_view.py          # Exibir menu e titulo
 │   └── aluno_view.py         # Coleta de dados (input) + validacoes com retry
+│   └── aluno_view.py         # Coleta de dados (input) + validacoes com retry
 ├── services/
 │   └── aluno_service.py      # Validadores puros (sem I/O)
 ├── repositories/
 │   └── aluno_repository.py   # Gerenciar lista_alunos + persistencia JSON
 └── controllers/
+    └── menu_controller.py    # Orquestrar fluxo (em construcao)
     └── menu_controller.py    # Orquestrar fluxo (em construcao)
 ```
 
@@ -56,19 +66,36 @@ Codigos/
 | **Service** | `aluno_service.py` | Validadores puros (`validar_nome`, `validar_rm`, etc); cria objeto Aluno | `input()` ou `print()` |
 | **Repository** | `aluno_repository.py` | Gerencia `lista_alunos`; funcoes `busca_aluno_rm()`, `salvando_lista_json()` | Validacoes, interface usuario |
 | **Controller** | `menu_controller.py` | Orquestra: view coleta → service valida → repository persiste | I/O direto |
+|--------|---------|-----------|---------|
+| **Model** | `aluno_model.py` | Define entidade Aluno com dataclass; metodo `exibir_informacoes()` | Persistencia, validacao |
+| **View** | `aluno_view.py` | Coleta dados usuario (`input_aluno`, `validacao_*`); exibe erros | Logica de negocio, acesso a dados |
+| **View** | `menu_view.py` | Exibe menu e titulo; funcao `exibicao_erro()` padronizada | Processamento de opcoes |
+| **Service** | `aluno_service.py` | Validadores puros (`validar_nome`, `validar_rm`, etc); cria objeto Aluno | `input()` ou `print()` |
+| **Repository** | `aluno_repository.py` | Gerencia `lista_alunos`; funcoes `busca_aluno_rm()`, `salvando_lista_json()` | Validacoes, interface usuario |
+| **Controller** | `menu_controller.py` | Orquestra: view coleta → service valida → repository persiste | I/O direto |
 
 ### O que Funciona (v1.4.3)
-✅ Entidade Aluno criada com dataclass  
-✅ Validadores puros em service (recebem dados, retornam bool)  
-✅ Repository com busca e salvamento JSON  
-✅ View com coleta de dados e validacoes com retry  
-✅ Estrutura de pastas organizada (models, views, services, repositories, controllers)  
+✅ Entidade Aluno criada com dataclass
+✅ Validadores puros em service (recebem dados, retornam bool)
+✅ Repository com busca e salvamento JSON
+✅ View com coleta de dados e validacoes com retry
+✅ Estrutura de pastas organizada (models, views, services, repositories, controllers)
+✅ Entidade Aluno criada com dataclass
+✅ Validadores puros em service (recebem dados, retornam bool)
+✅ Repository com busca e salvamento JSON
+✅ View com coleta de dados e validacoes com retry
+✅ Estrutura de pastas organizada (models, views, services, repositories, controllers)
 
 ### O que Ainda Falta (para v1.4.4)
-⏳ Completar `menu_controller.py` com handlers (adicionar, atualizar, excluir, exibir)  
-⏳ Conectar `main.py` → `menu_view` → `menu_controller` → fluxo completo  
-⏳ Corrigir bugs em `validacao_mensalidade()` (loop infinito)  
-⏳ Adicionar funcoes CRUD em repository (adicionar, atualizar, remover)  
+⏳ Completar `menu_controller.py` com handlers (adicionar, atualizar, excluir, exibir)
+⏳ Conectar `main.py` → `menu_view` → `menu_controller` → fluxo completo
+⏳ Corrigir bugs em `validacao_mensalidade()` (loop infinito)
+⏳ Adicionar funcoes CRUD em repository (adicionar, atualizar, remover)
+⏳ Testes basicos em `test_aluno.py`
+⏳ Completar `menu_controller.py` com handlers (adicionar, atualizar, excluir, exibir)
+⏳ Conectar `main.py` → `menu_view` → `menu_controller` → fluxo completo
+⏳ Corrigir bugs em `validacao_mensalidade()` (loop infinito)
+⏳ Adicionar funcoes CRUD em repository (adicionar, atualizar, remover)
 ⏳ Testes basicos em `test_aluno.py`
 
 ## Aprendizados e Boas Praticas Aplicadas (v1.4.3)
@@ -79,10 +106,24 @@ Codigos/
 - **Service:** Apenas validar dados ja coletados e aplicar regras de negocio
 - **Repository:** Apenas gerenciar onde os dados vivem (memoria, JSON, banco)
 - **Controller:** Apenas conectar as tres camadas acima
+**Aprendizado:** Cada camada tem um proposito claro
+- **View:** Apenas perguntar ao usuario (`input`) e mostrar resultado (`print`)
+- **Service:** Apenas validar dados ja coletados e aplicar regras de negocio
+- **Repository:** Apenas gerenciar onde os dados vivem (memoria, JSON, banco)
+- **Controller:** Apenas conectar as tres camadas acima
 
 **Beneficio:** Quando precisar mudar JSON para banco de dados, muda so repository. View e service nao sabem onde dados estao.
 
 ### 2. Validadores Puros (Testabilidade)
+**Antes (v1.4.2):**
+```python
+# Misturava input com validacao
+def validacao_nome():
+    nome = input("Digite nome: ")  # ← input dentro!
+    if nome == "":
+        return None
+    return nome.upper()
+```
 **Antes (v1.4.2):**
 ```python
 # Misturava input com validacao
@@ -102,6 +143,11 @@ def validacao_nome() -> str:
         exibicao_erro("Nome vazio!")
         # retry...
     return nome.upper()
+    nome = input("\nDigite o nome: ")
+    if nome.strip() == "":
+        exibicao_erro("Nome vazio!")
+        # retry...
+    return nome.upper()
 
 # Service valida dados prontos (aluno_service.py)
 def validar_nome(nome: str) -> bool:
@@ -110,11 +156,37 @@ def validar_nome(nome: str) -> bool:
         return True
     return False
 ```
+    """Recebe nome JA coletado, valida sem input."""
+    if isinstance(nome, str) and nome.strip() != "":
+        return True
+    return False
+```
 
 **Beneficio:** Agora posso testar `validar_nome("João")` sem digitar nada no terminal!
+assert validar_nome("Joao") == True
+assert validar_nome("") == False
+```
 
 ### 3. Quebrando Imports Circulares
 **Problema identificado:** `aluno_view.py` importava `aluno_service.py` E vice-versa = erro!
+**Implementado em v1.4.4:**
+```
+usuario escolhe opcao 1
+  ↓
+menu_view.menu_inicial_tela() + menu_controller.escolha_usuario()
+  ↓
+menu_controller.adicionar_aluno()
+  ↓
+aluno_view.input_aluno() [coleta nome, rm, curso, mensalidade]
+  ↓
+service valida cada campo
+  ↓
+aluno_service.criar_objeto_aluno() [cria Aluno dataclass]
+  ↓
+lista_alunos.append(aluno) [persiste em memoria]
+  ↓
+"✅ Aluno adicionado!"
+```
 
 **Solucao (v1.4.3):**
 - View NAO importa service
@@ -124,12 +196,15 @@ def validar_nome(nome: str) -> bool:
 **Regra de ouro:** Importacoes sempre "para baixo" (main → view → controller → service/repository → model)
 
 ### 4. Dataclass para Entidades
-**Antes:** Aluno era dict `{"nome_aluno": ..., "rm": ...}`  
+**Antes:** Aluno era dict `{"nome_aluno": ..., "rm": ...}`
 **Depois:** Aluno é classe com `@dataclass`
 
 **Beneficio:**
 - Type hints automaticos
 - Menos codigo boilerplate
+**Beneficios:**
+- Type hints automaticos (nome: str, rm: int, ...)
+- Menos boilerplate (`@dataclass` vs `__init__` manual)
 - Metodos proprios (`exibir_informacoes()`)
 
 ### 5. Docstrings Descritivas
@@ -138,23 +213,92 @@ Toda funcao tem docstring explicando:
 - Parametros esperados
 - O que retorna
 - Excecoes que pode lancar (quando relevante)
+Toda funcao tem docstring explicando proposito, parametros, retorno.
+
+---
 
 **Exemplo real do projeto:**
+
+### 1. `validacao_mensalidade()` Ainda Tem Loop Problemático ⚠️
+**Arquivo:** `aluno_view.py` linha 90-98
+**Estado:** Funciona mas logica confusa
+```python
+condicao = mensalidade < 0
+while condicao:
+    mensalidade = float(input(...))
+    condicao = mensalidade < 0  # ← AGORA recalcula!
+    if not condicao:
+        return mensalidade
+```
+
+**Para v1.4.5:** Simplificar com `while True` + `if/else`:
+```python
+while True:
+    valor = float(input("..."))
+    if valor >= 0:
+        return valor
+    exibicao_erro("Valor negativo!")
+```
+
+### 2. `validar_rm()` Nao Valida Completamente ⚠️
+**Arquivo:** `aluno_service.py` linha 60-67
+**Estado:** Apenas verifica tipo int
+```python
+def validar_rm(rm: int) -> bool:
+    if not isinstance(rm, int):
+        return False
+    return True  # ← aceita negativos, > 6 digitos, etc!
+```
+
+**Para v1.4.5:** Adicionar validacoes de negocio:
 ```python
 def busca_aluno_rm(rm: int) -> dict | None:
     """Busca aluno especifico pelo RM.
-    
+
     Parametro: RM do aluno para busca.
     Retorna: Dict do aluno se encontrado, None caso contrario.
     """
+    if not isinstance(rm, int) or rm <= 0 or len(str(rm)) > 6:
+        return False
+    # TODO: Verificar duplicidade (buscar em repository)
+    return True
 ```
 
 ### 6. Type Hints em Todas Funcoes
 Facilita entender o que entra e o que sai:
+**Arquivo:** `menu_view.py` linha 17
+**Estado:** Funcao declarada mas sem implementacao
+**Para v1.4.5:** Implementar loop:
 ```python
 def validar_mensalidade(valor: float) -> bool:  # recebe float, retorna bool
 def input_aluno() -> dict:  # nao recebe nada, retorna dict
+    while opcao != 0:
+        menu_inicial_tela()
+        try:
+            opcao = escolha_usuario()
+        except ValueError:
+            exibicao_erro("Digite numero valido!")
 ```
+### 4. Repository Sem Funcoes Auxiliares ⚠️
+**Arquivo:** `aluno_repository.py`
+**Faltam:**
+- `adicionar_aluno_repo(aluno)` - wrapper para append
+- `atualizar_aluno_repo(rm, dados)` - atualizar na lista
+- `remover_aluno_repo(rm)` - remover da lista
+- `carregar_lista_json()` - ler ao iniciar
+
+### 5. Controllers Restantes Nao Implementados ⚠️
+**Arquivo:** `menu_controller.py` linhas 70-83
+**Faltam handlers:**
+- `atualizar_aluno()` - 15 linhas de código
+- `excluir_aluno()` - 20 linhas de código
+- `exibir_aluno()` - 10 linhas de código
+- `exibir_alunos()` - 15 linhas de código
+
+### 6. Sem Try/Except em `escolha_usuario()` ⚠️
+**Arquivo:** `menu_controller.py` linha 31
+**Problema:** Usuario digita "abc" em vez de numero → ValueError nao tratado
+**Para v1.4.5:** Envolver em try/except
 
 ## Pontos de Atencao Identificados (v1.4.3)
 
@@ -228,6 +372,13 @@ def validar_nome(nome: str) -> bool:
 - [ ] Implementar `menu_inicial()` em `menu_view.py` (loop principal)
 - [ ] Completar repository com funcoes CRUD (adicionar, atualizar, remover)
 - [ ] Testar fluxo completo: adicionar → exibir → salvar JSON → funciona
+- [ ] Corrigir bug em `validacao_mensalidade()` (loop infinito)
+- [ ] Corrigir logica de `validar_*` em `aluno_service.py` (`isinstance` nunca None)
+- [ ] Completar `menu_controller.py` com todos handlers (CRUD completo)
+- [ ] Adicionar imports faltantes em `aluno_view.py` (`busca_aluno_rm`, `exibicao_erro`)
+- [ ] Implementar `menu_inicial()` em `menu_view.py` (loop principal)
+- [ ] Completar repository com funcoes CRUD (adicionar, atualizar, remover)
+- [ ] Testar fluxo completo: adicionar → exibir → salvar JSON → funciona
 
 ### Prioridade MEDIA (v1.4.5)
 - [ ] Carregamento automatico de JSON ao iniciar programa
@@ -235,8 +386,17 @@ def validar_nome(nome: str) -> bool:
 - [ ] Tratamento robusto de `ValueError` em todos inputs numericos
 - [ ] Confirmacao antes de excluir (com validacao de entrada)
 - [ ] Mensagens de feedback mais claras (`✅ Sucesso`, `❌ Erro`)
+- [ ] Carregamento automatico de JSON ao iniciar programa
+- [ ] Testes basicos com `pytest` em `test_aluno.py`
+- [ ] Tratamento robusto de `ValueError` em todos inputs numericos
+- [ ] Confirmacao antes de excluir (com validacao de entrada)
+- [ ] Mensagens de feedback mais claras (`✅ Sucesso`, `❌ Erro`)
 
 ### Prioridade BAIXA (v1.5.0+)
+- [ ] Excecoes customizadas (`NomeInvalidoError`, `RMDuplicadoError`)
+- [ ] Filtros de busca (por nome, por curso)
+- [ ] Relatorio de mensalidades (total, media, etc)
+- [ ] CLI com argparse (`python main.py --add`)
 - [ ] Excecoes customizadas (`NomeInvalidoError`, `RMDuplicadoError`)
 - [ ] Filtros de busca (por nome, por curso)
 - [ ] Relatorio de mensalidades (total, media, etc)

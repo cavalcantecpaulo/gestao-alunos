@@ -1,79 +1,71 @@
-# 🚀 Roadmap de Refatoração - CRUD Gestão de Alunos v1.4.3 → v1.4.4
+# 🚀 Roadmap de Refatoração - CRUD Gestão de Alunos v1.4.4 → v1.4.5
 
-## 🔍 DIAGNÓSTICO ATUAL (2026-03-06 - Estado Real v1.4.3)
+## 🔍 DIAGNÓSTICO ATUAL (2026-03-06 - Estado Real v1.4.4)
 
-**Versao:** v1.4.3  
-**Status:** ETAPA 1 em progresso (70% completa)  
-**Bloqueio principal:** Bugs em validadores + controller incompleto
+**Versao:** v1.4.4  
+**Status:** CRUD funcional 65-70% completo  
+**Bloqueio principal:** Handlers restantes + menu sem loop
 
-### ✅ O que JÁ FUNCIONA (parabens!):
-✅ Estrutura de pastas criada (models, views, services, repositories, controllers)  
-✅ `aluno_model.py` com dataclass funcional  
-✅ `aluno_repository.py` com `busca_aluno_rm()` e `salvando_lista_json()`  
-✅ `aluno_view.py` com coleta de dados (input_aluno, validacao_*)  
-✅ `menu_view.py` com exibicao de menu e erro padronizado  
-✅ `main.py` como entrypoint unico  
-✅ Validadores criados em `aluno_service.py` (estrutura correta)  
-✅ `menu_controller.py` iniciado com funcao `adicionar_aluno()`  
+### ✅ O que REALMENTE FUNCIONA (parabens!):
 
-### ❌ O que PRECISA SER CORRIGIDO (bloqueadores):
+✅ Arquitetura em camadas completa (models, views, services, repositories, controllers)  
+✅ Entidade `Aluno` com dataclass e `exibir_informacoes()`  
+✅ Repository com `lista_alunos`, `busca_aluno_rm()`, `salvando_lista_json()`  
+✅ View com coleta de dados e validacoes com retry (input_aluno, validacao_*)  
+✅ Service com validadores puros funcionando (validar_nome, validar_rm, validar_curso, validar_mensalidade)  
+✅ Controller com `adicionar_aluno()` completo e funcional!  
+✅ Fluxo CRUD para ADICIONAR: view coleta → service valida → repository persiste  
+✅ Match/case no controller roteando opcoes  
+✅ Menu exibindo opcoes (menu_inicial_tela)  
+✅ Sem imports circulares!  
 
-#### 1. **Bug Crítico em `aluno_service.py`** (todas validacoes quebradas!)
-```python
-# ATUAL (linha 10-12):
-def validar_nome(nome: str) -> bool:
-    if isinstance(nome, str) is None:  # ← isinstance NUNCA retorna None!
-        return False
-    return True  # ← sempre retorna True (aceita qualquer coisa)
-```
+**Teste:** `python Codigos/main.py` → selecione 1 → adicione aluno → funciona!
 
-**Problema:** `isinstance()` retorna `True` ou `False`, nunca `None`. Entao `isinstance(...) is None` sempre é `False`, e funcao sempre retorna `True`.
+### ❌ O que AINDA FALTA (30-35% do trabalho):
 
-**Impacto:** Validadores nao validam nada! Nome vazio passa, RM negativo passa, etc.
+#### 1. **Handlers Não Implementados (60% do trabalho pendente)**
+- `atualizar_aluno()` - skeleton vazio (linhas 71-77)
+- `excluir_aluno()` - skeleton vazio (linhas 79-83)
+- Faltam: `exibir_aluno()`, `exibir_alunos()`, conectar `salvando_lista_json()`
 
-#### 2. **Bug em `validacao_mensalidade()` (aluno_view.py linha 90-98)**
-```python
-condicao = mensalidade < 0
-while condicao:
-    # ...
-    if not condicao:  # ← condicao nunca recalculada!
-        return mensalidade
-```
+#### 2. **Menu Sem Loop (10% do trabalho)**
+- `menu_inicial()` em menu_view.py (linha 17) - skeleton vazio
+- Precisa: while opcao != 0 + try/except para ValueError em escolha_usuario()
 
-**Problema:** `condicao` definida uma vez, nunca atualizada dentro do loop. Loop infinito ou retorno incorreto.
+#### 3. **Validacoes Incompletas (15% do trabalho)**
+- `validar_rm()` - so verifica tipo int, nao valida negativos/max 6 digitos/duplicidade
+- `validacao_mensalidade()` - loop confuso (funciona mas pode simplificar)
 
-#### 3. **Imports Faltando em `aluno_view.py`**
-- Linha 5: chama `exibir_informacoes()` mas nao existe
-- Linha 26 e 85: chama `exibicao_erro()` mas nao importou de `menu_view`
-- Linha 63: chama `busca_aluno_rm()` mas nao importou de `aluno_repository`
+#### 4. **Repository Sem Helpers (10% do trabalho)**
+- Faltam: `adicionar_aluno_repo()`, `atualizar_aluno_repo()`, `remover_aluno_repo()`
+- Falta: `carregar_lista_json()` - ler ao iniciar
 
-#### 4. **`menu_controller.py` Incompleto**
-- Tem `adicionar_aluno()` mas validacoes passam dados errados (`dados_aluno["nome_aluno"]` em todos)
-- Handlers 2-6 comentados (atualizar, excluir, exibir, listar, salvar)
-
-#### 5. **`menu_view.py` Funcao `menu_inicial()` Vazia**
-- Declarada na linha 17 mas sem implementacao
-- `main.py` chama ela mas nao faz nada
+#### 5. **Sem Try/Except em `escolha_usuario()` (5% do trabalho)**
+- Usuario digita "abc" em vez de numero → ValueError nao tratado
 
 ### 📊 Progresso Atual:
 ```
-ETAPA 1 (Quebrar Circular + Estruturar):
-[██████████████░░░░░░░░░░] 70% completa
+[████████████████████████░░░░] 67-70% completo
 
-Feito:
+IMPLEMENTADO:
 - Estrutura de pastas ✅
 - Dataclass Aluno ✅
-- Repository basico ✅
 - View com inputs ✅
-- Service com validadores (estrutura) ✅
-- Controller iniciado ✅
+- Service com validadores ✅
+- Repository basico ✅
+- Controller adicionar_aluno ✅
+- Menu display ✅
 
-Faltando:
-- Corrigir bugs em validadores ❌
-- Completar controller handlers ❌
-- Conectar main → menu → controller ❌
-- Repository CRUD completo ❌
+FALTANDO:
+- 4 handlers do controller ❌
+- Menu loop ❌
+- Validacoes completas ❌
+- Repository helpers ❌
+- Try/except inputs numericos ❌
 ```
+
+**Tempo para completar v1.4.5:** 2-3 horas de trabalho focado
+
 
 ---
 
@@ -117,197 +109,307 @@ aluno_model.py (Aluno: entidade, método exibir_informacoes())
 
 ## ✅ ETAPAS DE REFATORAÇÃO (Baixo Risco)
 
-## ✅ ETAPA 1: Corrigir Bugs e Completar Estrutura (v1.4.4 - PROXIMA RELEASE)
+## ✅ ETAPA 1: Completar CRUD Funcional para v1.4.5 (PROXIMO PASSO)
 
-**Objetivo:** App funciona completo (adicionar, exibir, salvar funcionam)
+**Objetivo:** CRUD 100% funcional (todas as 6 opcoes do menu)
 
-### 🎯 Foco Principal: Corrigir 5 Bugs Bloqueadores
+### 🎯 5 Tarefas Principais (Prioridade)
 
 ---
 
-#### BUG 1: Validadores em `aluno_service.py` Sempre Retornam True
+#### TAREFA 1: Implementar Menu Loop (15 minutos)
+**Arquivo:** `Codigos/views/menu_view.py` linha 17
 
-**Arquivo:** `Codigos/services/aluno_service.py` (linhas 9-26)
+**O que fazer:**
+A funcao `menu_inicial(opcao)` precisa ter um loop que:
+1. Chama `menu_inicial_tela()` (ja existe)
+2. Captura opcao com `escolha_usuario()` (precisa try/except)
+3. Repete ate usuario escolher 0
 
-**Problema Tecnico:**
+**Por que:** Sem loop, programa executa uma vez e encerra. Menu precisa ficar rodando.
+
+**Código necessário (7 linhas):**
 ```python
-def validar_nome(nome: str) -> bool:
-    if isinstance(nome, str) is None:  # ← ERRO AQUI
+def menu_inicial(opcao):
+    while opcao != 0:
+        menu_inicial_tela()
+        try:
+            opcao = escolha_usuario()
+        except ValueError:
+            exibicao_erro("Digite numero valido!")
+```
+
+**Teste:** `python Codigos/main.py` → escolha 1 → depois escolha 0 → encerra
+
+---
+
+#### TAREFA 2: Implementar 4 Handlers do Controller (60-80 minutos)
+**Arquivo:** `Codigos/controllers/menu_controller.py` linhas 71-83
+
+**O que fazer:**
+
+##### 2.1: `atualizar_aluno()` (20 minutos)
+```
+1. Chama input_rm() [view]
+2. Busca aluno no repository
+3. Se nao existe → erro e retorna
+4. Se existe → exibe aluno + coleta novos dados
+5. Valida novos dados
+6. Atualiza na lista
+7. Exibe sucesso
+```
+
+##### 2.2: `excluir_aluno()` (20 minutos)
+```
+1. Chama input_rm() [view]
+2. Busca aluno no repository
+3. Se nao existe → erro e retorna
+4. Se existe → exibe aluno + pede confirmacao (S/N)
+5. Se confirmado → remove da lista
+6. Exibe sucesso
+```
+
+##### 2.3: `exibir_aluno()` (15 minutos)
+```
+1. Chama input_rm() [view]
+2. Busca aluno no repository
+3. Se existe → chama aluno.exibir_informacoes()
+4. Se nao → erro
+```
+
+##### 2.4: `exibir_alunos()` (15 minutos)
+```
+1. Valida se lista nao vazia
+2. Se vazia → exibe "Nenhum aluno"
+3. Se tem → loop exibindo todos com aluno.exibir_informacoes()
+```
+
+**Padrão:** Todos seguem fluxo similar ao `adicionar_aluno()` que JA FUNCIONA!
+
+---
+
+#### TAREFA 3: Melhorar Validacoes (30-40 minutos)
+**Arquivo:** `Codigos/services/aluno_service.py`
+
+**O que fazer:**
+
+##### 3.1: `validar_rm()` - adicionar validacoes completas
+```python
+def validar_rm(rm: int) -> bool:
+    # Verificar tipo
+    if not isinstance(rm, int):
         return False
+    # Verificar positivo
+    if rm <= 0:
+        return False
+    # Verificar max 6 digitos
+    if len(str(rm)) > 6:
+        return False
+    # Verificar duplicidade (buscar em repository)
+    if busca_aluno_rm(rm) is not None:
+        return False  # RM ja existe!
     return True
 ```
 
-**Por que esta errado:**
-- `isinstance(nome, str)` retorna `True` ou `False` (nunca `None`)
-- Entao `isinstance(...) is None` sempre é `False`
-- Funcao sempre pula o `if` e retorna `True`
-- **Resultado:** Nome vazio, None, numero... tudo passa!
+**Impacto:** Rejeitara RM negativo, > 6 digitos, duplicado
 
-**O que você vai aprender:**
-- `isinstance(x, tipo)` retorna boolean, nao None
-- Validacao correta: checar o tipo E checar se vazio
+##### 3.2: `validacao_mensalidade()` - simplificar loop
+**Arquivo:** `Codigos/views/aluno_view.py` linha 90-98
 
-**Correcao necessaria** (sem mexer no codigo, so entender):
+Mudar de:
 ```python
-def validar_nome(nome: str) -> bool:
-    """Valida se nome é string nao vazia."""
-    if isinstance(nome, str) and nome.strip() != "":
-        return True
-    return False
-```
-
-**Aplique o mesmo padrao para:**
-- `validar_rm()`: checar se int, positivo, max 6 digitos
-- `validar_curso()`: checar se string nao vazia
-- `validar_mensalidade()`: checar se numero >= 0
-
----
-
-#### BUG 2: Loop Infinito em `validacao_mensalidade()`
-
-**Arquivo:** `Codigos/views/aluno_view.py` (linhas 90-98)
-
-**Problema Tecnico:**
-```python
-mensalidade = float(input(...))
 condicao = mensalidade < 0
 while condicao:
-    exibicao_erro("...")
     mensalidade = float(input(...))
-    if not condicao:  # ← condicao NUNCA muda!
+    condicao = mensalidade < 0
+    if not condicao:
         return mensalidade
-return mensalidade
 ```
 
-**Por que esta errado:**
-- `condicao` definida uma vez (antes do loop)
-- Dentro do loop, `condicao` nunca recalculada
-- Se usuario digitar negativo, `condicao = True`, loop infinito!
-
-**O que você vai aprender:**
-- Loop precisa **recalcular condicao** a cada iteracao
-- Padrao correto: `while True:` + `if valido: return` + `else: continue`
-
-**Correcao necessaria** (padrao):
+Para:
 ```python
-def validacao_mensalidade() -> float:
-    """Coleta mensalidade com retry automatico."""
-    while True:
+while True:
+    try:
+        valor = float(input("Digite mensalidade: "))
+        if valor >= 0:
+            return valor
+        exibicao_erro("Valor negativo!")
+    except ValueError:
+        exibicao_erro("Digite numero valido!")
+```
+
+**Beneficio:** Codigo mais claro, tratamento de erro melhorado
+
+---
+
+#### TAREFA 4: Adicionar Try/Except em `escolha_usuario()` (10 minutos)
+**Arquivo:** `Codigos/controllers/menu_controller.py` linha 31
+
+**O que fazer:**
+```python
+def escolha_usuario():
+    while True:  # ← adicionar loop
         try:
-            valor = float(input("\nDigite mensalidade: "))
-            if valor >= 0:
-                return valor  # ← sai do loop se valido
-            else:
-                exibicao_erro("Valor negativo!")
-                # ← volta ao inicio do while
-        except ValueError:
-            exibicao_erro("Digite numero!")
-```
-
-**Beneficio:** Usuario digita "abc" → pede de novo. Digita "-10" → pede de novo. Digita "50" → aceita!
-
----
-
-#### BUG 3: Imports Faltando em `aluno_view.py`
-
-**Arquivo:** `Codigos/views/aluno_view.py`
-
-**Problemas:**
-1. Linha 26, 56, 77, 97: chama `exibicao_erro()` mas nao importou
-2. Linha 63, 68: chama `busca_aluno_rm()` mas nao importou
-3. Linha 5: chama `exibir_informacoes()` mas funcao nao existe assim
-
-**O que você vai aprender:**
-- Python precisa saber ONDE funcao vive antes de chamar
-- Imports no topo do arquivo
-
-**Correcao necessaria** (adicionar no topo):
-```python
-from Codigos.views.menu_view import exibicao_erro
-from Codigos.repositories.aluno_repository import busca_aluno_rm
-```
-
-**Para linha 5** (funcao `informacoes_aluno`):
-- Hoje chama `exibir_informacoes()` sem contexto
-- Deveria receber `aluno: Aluno` e chamar `aluno.exibir_informacoes()`
-- Ou deletar funcao (nao usada em nenhum lugar)
-
----
-
-#### BUG 4: `menu_controller.py` Passa Dados Errados
-
-**Arquivo:** `Codigos/controllers/menu_controller.py` (linhas 19-30)
-
-**Problema:**
-```python
-if not validar_nome(dados_aluno["nome_aluno"]):
-    print("Nome inválido!!!")
-    return
-
-if not validar_rm(dados_aluno["nome_aluno"]):  # ← ERRADO! deveria ser ["rm"]
-    print("RM Inválido!!!")
-    return
-
-if not validar_curso(dados_aluno["nome_aluno"]):  # ← ERRADO! deveria ser ["curso"]
-    # ...
-```
-
-**O que você vai aprender:**
-- Dict tem chaves: `{"nome_aluno": ..., "rm": ..., "curso": ..., "mensalidade": ...}`
-- Validar RM precisa pegar `dados["rm"]`, nao `dados["nome_aluno"]`
-
-**Correcao necessaria:**
-- Linha 22: `validar_rm(dados_aluno["rm"])`
-- Linha 26: `validar_curso(dados_aluno["curso"])`
-- Linha 30: `validar_mensalidade(dados_aluno["mensalidade"])`
-
-**Alem disso, falta:**
-- Depois de validar, criar objeto Aluno: `aluno = criar_objeto_aluno(...)`
-- Adicionar na repository: `adicionar_aluno_repo(dados_aluno)` (funcao nao existe ainda!)
-- Print sucesso: `print("✅ Aluno adicionado!")`
-
----
-
-#### BUG 5: `menu_inicial()` Vazia e Sem Conexao
-
-**Arquivos:** `menu_view.py` (linha 17) e `main.py` (linha 4)
-
-**Problema:**
-- `main.py` chama `menu_inicial(opc)` mas funcao nao faz nada
-- Loop do menu precisa ser implementado
-
-**O que você vai aprender:**
-- Loop principal: `while opcao != 0:`
-- Exibir menu → capturar opcao → processar → repetir
-
-**Correcao necessaria** (pseudocodigo):
-```python
-# menu_view.py
-def menu_inicial(opcao_inicial):
-    """Loop principal do menu."""
-    opcao = opcao_inicial
-    while opcao != 0:
-        menu_inicial_tela()  # exibe opcoes
-        try:
-            opcao = int(input("\nSelecione opcao: "))
-            processar_opcao(opcao)  # chama controller
+            opcao = int(input("Selecione opcao: "))
+            match opcao:
+                case 1: adicionar_aluno()
+                # ... resto do match
+            return opcao
         except ValueError:
             exibicao_erro("Digite numero valido!")
-    print("👋 Encerrando...")
 ```
 
-**Nota:** `processar_opcao()` ainda nao existe. Vai no controller!
+**Impacto:** Usuario digita "abc" → pede de novo em vez de quebrar
 
 ---
 
-### Checklist ETAPA 1 (v1.4.4):
-- [ ] BUG 1: Corrigir `validar_*` em `aluno_service.py` (isinstance logic)
-- [ ] BUG 2: Corrigir loop em `validacao_mensalidade()` (recalcular condicao)
-- [ ] BUG 3: Adicionar imports em `aluno_view.py` (exibicao_erro, busca_aluno_rm)
-- [ ] BUG 4: Corrigir chaves de dict em `menu_controller.adicionar_aluno()`
-- [ ] BUG 5: Implementar `menu_inicial()` com loop funcional
-- [ ] Criar `adicionar_aluno_repo()` em repository
-- [ ] Testar fluxo: adicionar aluno → exibir → salvar JSON → funciona!
+#### TAREFA 5: Adicionar Repository Helpers (10 minutos)
+**Arquivo:** `Codigos/repositories/aluno_repository.py`
+
+**O que fazer:**
+```python
+def adicionar_aluno_repo(aluno) -> None:
+    """Adiciona aluno na lista."""
+    lista_alunos.append(aluno)
+
+def atualizar_aluno_repo(rm: int, novos_dados: dict) -> None:
+    """Atualiza dados de aluno por RM."""
+    aluno = busca_aluno_rm(rm)
+    if aluno:
+        aluno.update(novos_dados)
+
+def remover_aluno_repo(rm: int) -> None:
+    """Remove aluno da lista por RM."""
+    aluno = busca_aluno_rm(rm)
+    if aluno:
+        lista_alunos.remove(aluno)
+```
+
+**Impacto:** Simplifica controlador (ja tem funcoes prontas)
+
+---
+
+### 📋 Checklist TAREFAS para v1.4.5:
+- [ ] TAREFA 1: Menu loop (15 min) - `menu_inicial()` com while
+- [ ] TAREFA 2: Handlers (80 min) - atualizar, excluir, exibir, listar
+- [ ] TAREFA 3: Validacoes (40 min) - validar_rm() + simplificar mensalidade
+- [ ] TAREFA 4: Try/except (10 min) - escolha_usuario() sem quebrar
+- [ ] TAREFA 5: Repository helpers (10 min) - adicionar, atualizar, remover
+
+**Total:** ~150 minutos (2-3 horas)
+
+---
+
+### ✅ Criterio de Pronto para v1.4.5:
+
+- [ ] `python Codigos/main.py` roda sem erro
+- [ ] Adicionar aluno → funciona completamente
+- [ ] Atualizar aluno → busca + altera + persiste
+- [ ] Excluir aluno → pede confirmacao → deleta
+- [ ] Exibir aluno → busca por RM → mostra dados
+- [ ] Exibir todos → lista completa
+- [ ] Salvar JSON → arquivo criado com dados
+- [ ] Usuario digita "abc" em numero → pede de novo
+- [ ] Usuario tenta RM negativo → rejeita
+- [ ] Usuario tenta RM duplicado → rejeita
+
+---
+
+## 💡 APRENDIZADOS-CHAVE DA REFATORAÇÃO v1.4.3 → v1.4.4
+
+### 1. Validadores Puros Funcionam! ✅
+Em v1.4.3, havia bug: `isinstance(nome, str) is None` sempre retornava False.  
+Em v1.4.4, corrigido para: `if not isinstance(nome, str) or nome == ""`
+
+**Aprendizado:** Validadores agora sao testáveis isoladamente!
+```python
+# Testar sem digitar nada:
+assert validar_nome("Joao") == True
+assert validar_nome("") == False
+```
+
+### 2. Fluxo CRUD Funcional (Adicionar) ✅
+View coleta → Service valida → Repository persiste. Funciona do começo ao fim!
+
+### 3. Match/Case Roteando Handlers ✅
+Usando match/case no controller para rotear opcões. Clean e eficiente!
+
+### 4. Sem Imports Circulares ✅
+View NAO importa Service. Service NAO importa View. Controller importa ambos.
+
+---
+
+## 📊 STATUS ATUAL E PROXIMOS PASSOS
+
+### Progresso v1.4.4 → v1.4.5
+```
+[████████████████████████░░░░] 67-70% pronto para commit v1.4.4
+
+Feito:
+- Estrutura de pastas ✅
+- Dataclass Aluno ✅
+- View com inputs ✅
+- Service com validadores ✅
+- Repository basico ✅
+- Controller adicionar_aluno ✅
+- Menu display ✅
+- Sem circular imports ✅
+
+Faltando:
+- 4 handlers do controller ❌
+- Menu loop ❌
+- Validacoes completas ❌
+- Repository helpers ❌
+- Try/except inputs ❌
+```
+
+### Tempo Estimado para v1.4.5
+- Implementar handlers: 80 minutos
+- Melhorar validacoes: 40 minutos
+- Menu loop + try/except: 25 minutos
+- Repository helpers: 10 minutos
+- Testar tudo: 20 minutos
+
+**Total:** 2-3 horas de trabalho focado
+
+---
+
+## 🎯 PLANO DE ACAO (v1.4.5 - Proxima Sessao)
+
+### Sessao 1 (90 min): Implementar 4 Handlers
+1. Abrir `menu_controller.py`
+2. Implementar `atualizar_aluno()` (20 min) - busca + altera + persiste
+3. Implementar `excluir_aluno()` (20 min) - busca + confirmacao + deleta
+4. Implementar `exibir_aluno()` (15 min) - busca + exibe com Aluno.exibir_informacoes()
+5. Implementar `exibir_alunos()` (15 min) - lista todos
+6. Testar cada um: `python main.py` → escolha opcao
+
+### Sessao 2 (40 min): Validacoes Completas
+1. Melhorar `validar_rm()` em `aluno_service.py` - adicionar positivo + max 6 digitos + duplicidade
+2. Simplificar `validacao_mensalidade()` em `aluno_view.py` - usar `while True` padrao
+3. Testar: RM negativo → rejeita, RM > 6 digitos → rejeita, RM duplicado → rejeita
+
+### Sessao 3 (25 min): Menu Loop e Try/Except
+1. Implementar `menu_inicial()` em `menu_view.py` - while loop
+2. Adicionar try/except em `escolha_usuario()` - ValueError tratado
+3. Testar: usuario digita "abc" → pede de novo
+
+### Sessao 4 (15 min): Repository Helpers
+1. Adicionar `adicionar_aluno_repo()`, `atualizar_aluno_repo()`, `remover_aluno_repo()`
+2. Simplificar chamadas no controller
+
+### Sessao 5 (20 min): Teste Completo + Commit
+1. `python main.py`
+2. Testar fluxo: adicionar → atualizar → excluir → exibir → listar → salvar
+3. Verificar JSON foi criado com dados
+4. Commit: `feat(v1.4.5): implementa CRUD 100% completo`
+
+---
+
+**Próxima atualização:** Apos completar v1.4.5, atualizar para v1.4.6 (testes + carregamento JSON)
+
+**Status:** 🟢 PRONTO PARA COMMIT v1.4.4 (funcional 67-70%) → Próximo: v1.4.5 (CRUD 100%)
+
 
 ##### Ação 1: Revisar o que `aluno_service.py` precisa de `aluno_view.py`
 **Entender o problema:**

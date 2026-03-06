@@ -1,3 +1,6 @@
+from Codigos.repositories.aluno_repository import busca_aluno_rm
+
+
 def informacoes_aluno() -> None:
     """Lista dados de aluno, com um padrão de formatação.
     Parâmetro: aluno - dicionário com os dados do aluno, para exibição organizada.
@@ -88,9 +91,10 @@ def validacao_mensalidade() -> float:
     mensalidade = float(input(f"\nDigite o valor da mensalidade do aluno: "))
     condicao = mensalidade < 0
     while condicao:
-            exibicao_erro("Valor de mensalidade inválido!!!")
-            mensalidade = float(input(f"\nDigite o valor da mensalidade do aluno: "))
-            if not condicao:
+        exibicao_erro("Valor de mensalidade inválido!!!")
+        mensalidade = float(input(f"\nDigite o valor da mensalidade do aluno: "))
+        condicao = mensalidade<0
+        if not condicao:
                 return mensalidade
     return mensalidade
 

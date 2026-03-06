@@ -15,7 +15,7 @@ def exibicao_erro(erro: str) -> None:
 def menu_inicial(opcao) -> None:
     """Menu executado quando se roda o projeto.
     Parâmetro: opção, que vêm -1, para início do loop, e depois passa para um input(Selecione opção), que aparece no Menu, para prosseguir.
-"""
+    """
 
 def menu_inicial_tela():
     exibir_titulo_inicial()
